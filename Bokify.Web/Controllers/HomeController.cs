@@ -1,4 +1,4 @@
-using Bokify.Web.Models;
+using Bokify.Web.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 

@@ -1,4 +1,4 @@
-namespace Bokify.Web.Models
+namespace Bokify.Web.Core.ViewModels
 {
     public class ErrorViewModel
     {
