@@ -31,7 +31,9 @@ namespace Bokify.Web.Controllers
 			_context.Add(new Category { Name = model.Name });
 			_context.SaveChanges();
 
-			return RedirectToAction(nameof(Index));
+            TempData["Message"] = "Saved successflly";
+
+            return RedirectToAction(nameof(Index));
 		}
 		[HttpGet]
 		public IActionResult Edit(int id)
@@ -60,8 +62,26 @@ namespace Bokify.Web.Controllers
 			category.LastUpdetedOn = DateTime.Now;
 
 			_context.SaveChanges();
+			TempData["Message"] = "Saved successflly";
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+		[ValidateAntiForgeryToken]
+        public IActionResult ChangeStatus(int id)
+        {
+        
+            var category = _context.Categories.Find(id);
+            if (category is null)
+                return NotFound();
+
+            category.IsDeleted = !category.IsDeleted;
+            category.LastUpdetedOn = DateTime.Now;
+
+            _context.SaveChanges();
+
+            return Ok(category.LastUpdetedOn.ToString());
         }
     }
 }

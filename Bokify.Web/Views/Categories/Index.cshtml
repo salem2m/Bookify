@@ -2,6 +2,13 @@
 @{
     ViewData["Title"] = "Categories";
 }
+<style>
+    .btn-xs {
+        padding: 0.25rem 0.5rem; /* تقليل البادينج */
+        font-size: 0.75rem; /* تصغير الخط */
+        border-radius: 0.2rem; /* تعديل الكورنر لو عايز */
+    }
+</style>
 
 <div class="card shadow-sm">
     <div class="card-header">
@@ -68,16 +75,26 @@
                             <tr>
                                 <td>@category.Name</td>
                                 <td>
-                                    <span class="badge badge-light-@(category.IsDeleted ? "danger" : "success")">
+                                    <span class="badge badge-light-@(category.IsDeleted ? "danger" : "success") js-status">
                                         @(category.IsDeleted ? "Deleted" : "Available")
                                     </span>
                                 </td>
                                 <td>@category.CreatedOn</td>
-                                <td>@category.LastUpdetedOn</td>
+                                <td class="js-lastupdatedon" >@category.LastUpdetedOn</td>
                                 <td>
-                                    <a class="btn btn-sm btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">
+                                    @* <a class="btn btn-sm btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">
                                         Edit
-                                    </a>
+                                    </a> *@
+                                    <div class="btn-group">
+                                        <button class="btn btn-secondary btn-xs btn-hover-rise dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            More
+                                        </button>
+                                        <ul class="dropdown-menu px-1">
+                                            <li><a class="dropdown-item" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">Edit</a></li>
+                                            <li><a href="#" class="dropdown-item js-toggle-status" data-id="@category.Id">shange status</a></li>
+                                        </ul>
+                                    </div>
+                                   
                                 </td>
                             </tr>
                         }
@@ -87,5 +104,56 @@
         }
     </div>
 </div>
+@Html.AntiForgeryToken()
 
+@section Scripts
+{
+    <script>
+        $(document).ready(function() {
+            $('.js-toggle-status').on('click', function() {
+                var btn = $(this);
 
+                bootbox.confirm({
+                    message: "Are you sure that you nees to change this item status!",
+                    size: "mediam",
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-xs btn-danger btn-hover-rise'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-xs btn-secondary btn-hover-rise'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.post({
+                                url: '/Categories/ChangeStatus/' + btn.data('id'),
+
+                                data: {
+                                    '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                                },
+
+                                success: function (LastUpdetedOn) {
+                                    var raw = btn.parents('tr')
+                                    var status = raw.find('.js-status')
+                                    var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
+                                    status.text(newStatus).toggleClass('badge-light-success badge-light-danger')
+                                    raw.find('.js-lastupdatedon').html(LastUpdetedOn);
+                                    raw.addClass('animate__animated animate__flash');
+                                    showSuccessMessage();
+                                },
+
+                                Error: function (LastUpdetedOn) {
+                                    showErrorMessage();
+                                }
+                            });
+                        }
+                    }
+                });
+                
+            })
+        });
+    </script>
+}
