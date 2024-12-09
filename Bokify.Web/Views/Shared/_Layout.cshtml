@@ -11,6 +11,9 @@
 	<!--begin::Global Stylesheets Bundle(used by all pages)-->
 	<link rel="stylesheet" href="~/assets/css/plugins.bundle.css" type="text/css" />
 	<link rel="stylesheet" href="~/assets/css/style.bundle.css" type="text/css" />
+
+	@await RenderSectionAsync("Styles", required: false)
+
 	<!--end::Global Stylesheets Bundle-->
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/Bookify.Web.styles.css" asp-append-version="true" />
@@ -66,6 +69,7 @@
 	<script src="~/assets/js/scripts.bundle.js"></script>
 	<!--end::Global Javascript Bundle-->
     <script src="~/lib/bootbox.js/bootbox.min.js"></script>
+	@await RenderSectionAsync("plugins", required: false)
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
