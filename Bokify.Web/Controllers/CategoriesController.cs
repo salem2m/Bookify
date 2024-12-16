@@ -1,24 +1,26 @@
-﻿using Bokify.Web.Core.Models;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
 	public class CategoriesController : Controller
 	{
 		private ApplicationDbContext _context;
+		private readonly IMapper _mapper;
 
-		public CategoriesController(ApplicationDbContext context)
-		{
-			_context = context;
-		}
-		[HttpGet]
+        public CategoriesController(ApplicationDbContext context, IMapper mapper = null)
+        {
+            _context = context;
+            _mapper = mapper;
+        }
+        [HttpGet]
 		public IActionResult Index()
 		{
-			//TODO: use view model
-			return View(_context.Categories.ToList());
+			var categories = _context.Categories.ToList();
+			var viewmodel = _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+
+            return View(viewmodel);
 		}
 		[HttpGet]
-		public IActionResult Create()
+        [AjaxOnly]
+        public IActionResult Create()
 		{
 			return View("Form");
 		}
@@ -27,13 +29,18 @@ namespace Bokify.Web.Controllers
 		public IActionResult Create(CategoryFormViewModel model)
 		{
 			if (!ModelState.IsValid)
-				return View("Form", model);
-			_context.Add(new Category { Name = model.Name });
+				return BadRequest();
+
+            var category = _mapper.Map<Category>(model);
+
+            _context.Add(category);
 			_context.SaveChanges();
+
+            var viewmodel = _mapper.Map<CategoryViewModel>(category);
 
             TempData["Message"] = "Saved successflly";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), viewmodel);
 		}
 		[HttpGet]
 		public IActionResult Edit(int id)
@@ -41,7 +48,7 @@ namespace Bokify.Web.Controllers
 			var category = _context.Categories.Find(id);
 			if (category is null)
 				return NotFound();
-			var ViewModel = new CategoryFormViewModel { Id = id, Name = category.Name };
+			var ViewModel = _mapper.Map<CategoryFormViewModel>(category);
 
 
             return View("Form", ViewModel);
@@ -58,8 +65,8 @@ namespace Bokify.Web.Controllers
             if (category is null)
                 return NotFound();
 
-			category.Name = model.Name;
-			category.LastUpdetedOn = DateTime.Now;
+			category = _mapper.Map(model, category);
+            category.LastUpdetedOn = DateTime.Now;
 
 			_context.SaveChanges();
 			TempData["Message"] = "Saved successflly";
@@ -83,5 +90,14 @@ namespace Bokify.Web.Controllers
 
             return Ok(category.LastUpdetedOn.ToString());
         }
+
+        public IActionResult AllowItem(CategoryFormViewModel model)
+        {
+
+            var category = _context.Categories.SingleOrDefault(c=>c.Name == model.Name);
+			var IsAllowed = category is null || category.Id.Equals(model.Id);
+            return Json(IsAllowed);
+        }
+
     }
 }

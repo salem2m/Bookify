@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Category>
+﻿@model IEnumerable<CategoryViewModel>
 @{
     ViewData["Title"] = "Categories";
 }
@@ -108,7 +108,7 @@
                                     </button>
                                     <ul class="dropdown-menu px-1">
                                         <li><a class="dropdown-item" asp-controller="Categories" asp-action="Edit" asp-route-id="@category.Id">Edit</a></li>
-                                        <li><a href="#" class="dropdown-item js-toggle-status" data-id="@category.Id">shange status</a></li>
+                                        <li><a href="#" class="dropdown-item js-toggle-status" data-url="/Categories/ChangeStatus/@category.Id">shange status</a></li>
                                     </ul>
                                 </div>
 
@@ -128,58 +128,5 @@
 @Html.AntiForgeryToken()
 @section Scripts
 {
-    <script>
-
-
-
-        $(document).ready(function () {
-
-            $('.js-toggle-status').on('click', function () {
-                var btn = $(this);
-
-                bootbox.confirm({
-                    message: "Are you sure that you nees to change this item status!",
-                    size: "mediam",
-                    buttons: {
-                        confirm: {
-                            label: 'Yes',
-                            className: 'btn-xs btn-danger btn-hover-rise'
-                        },
-                        cancel: {
-                            label: 'No',
-                            className: 'btn-xs btn-secondary btn-hover-rise'
-                        }
-                    },
-                    callback: function (result) {
-                        if (result) {
-                            $.post({
-                                url: '/Categories/ChangeStatus/' + btn.data('id'),
-
-                                data: {
-                                    '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                                },
-
-                                success: function (LastUpdetedOn) {
-                                    var raw = btn.parents('tr')
-                                    var status = raw.find('.js-status')
-                                    var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
-                                    status.text(newStatus).toggleClass('badge-light-success badge-light-danger')
-                                    raw.find('.js-lastupdatedon').html(LastUpdetedOn);
-                                    raw.addClass('animate__animated animate__flash');
-                                    showSuccessMessage();
-                                },
-
-                                Error: function (LastUpdetedOn) {
-                                    showErrorMessage();
-                                }
-                            });
-                        }
-                    }
-                });
-
-            })
-        });
-
-
-    </script>
+   
 }

@@ -1,6 +1,10 @@
 ﻿var table;
 var datatable;
 var exportedCols = [];
+
+function onModalBegain() {
+    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+}
 function showSuccessMessage(message = 'Saved successfully') {
     Swal.fire({
         icon: 'success',
@@ -20,6 +24,9 @@ function showErrorMessage(message = 'Saved successfully') {
             confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-activ-lihgt-primary"
         }
     });
+}
+function onModalComplete() {
+    $('body :submit').removeAttr('disabled');
 }
 
 //DataTables
@@ -126,7 +133,7 @@ var KTDatatables = function () {
 }();
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     var message = $('#Message').text();
     if (message !== '') {
         showSuccessMessage(message);
@@ -136,5 +143,51 @@ $(document).ready(function() {
     KTUtil.onDOMContentLoaded(function () {
         KTDatatables.init();
     });
+
+    //Handle Change Status
+    $('.js-toggle-status').on('click', function () {
+        var btn = $(this);
+
+        bootbox.confirm({
+            message: "Are you sure that you nees to change this item status!",
+            size: "mediam",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-xs btn-danger btn-hover-rise'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-xs btn-secondary btn-hover-rise'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.post({
+                        url: btn.data('url'),
+
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+
+                        success: function (LastUpdetedOn) {
+                            var raw = btn.parents('tr')
+                            var status = raw.find('.js-status')
+                            var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
+                            status.text(newStatus).toggleClass('badge-light-success badge-light-danger')
+                            raw.find('.js-lastupdatedon').html(LastUpdetedOn);
+                            raw.addClass('animate__animated animate__flash');
+                            showSuccessMessage();
+                        },
+
+                        Error: function (LastUpdetedOn) {
+                            showErrorMessage();
+                        }
+                    });
+                }
+            }
+        });
+
+    })
 
 });
