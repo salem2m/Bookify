@@ -1,21 +1,23 @@
 ﻿var table;
 var datatable;
+var updatedRow;
 var exportedCols = [];
 
-function onModalBegain() {
+function onModalBegin() {
     $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
 }
 function showSuccessMessage(message = 'Saved successfully') {
     Swal.fire({
         icon: 'success',
-        title: 'success',
+        title: 'Good Job',
         text: message,
         customClass: {
             confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-activ-lihgt-primary"
         }
     });
 }
-function showErrorMessage(message = 'Saved successfully') {
+
+function showErrorMessage(message = 'Something went wrong!') {
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -25,8 +27,21 @@ function showErrorMessage(message = 'Saved successfully') {
         }
     });
 }
+function OnModalSuccess(row) {
+    showSuccessMessage();
+    $('#Modal').modal('hide');
+    if (updatedRow !== undefined) {
+        datatable.row(updatedRow).remove().draw();
+        updatedRow = undefined;
+        
+    }
+
+    var newRow = $(row);
+    datatable.row.add(newRow).draw();
+    
+}
 function onModalComplete() {
-    $('body :submit').removeAttr('disabled');
+    $('body :submit').removeAttr('disabled').removeAttr('data-kt-indicator');
 }
 
 //DataTables
@@ -43,7 +58,6 @@ var KTDatatables = function () {
 
         datatable = $(table).DataTable({
             "info": false,
-            'order': [],
             'pageLength': 10,
         });
     }
@@ -143,9 +157,34 @@ $(document).ready(function () {
     KTUtil.onDOMContentLoaded(function () {
         KTDatatables.init();
     });
+    //Handel bootstrap modal
+    $('body').delegate('.js-render-modal', 'click', function () {
+        var btn = $(this);
+        var modal = $('#Modal');
+        modal.find('#ModalLabel').text(btn.data('title'));
+
+    if (btn.data('update') !== undefined) {
+        updatedRow = btn.parents('tr');
+    }
+
+        $.get({
+            url: btn.data('url'),
+            success: function (form) {
+                modal.find('.modal-body').html(form);
+                $.validator.unobtrusive.parse(modal);
+                
+            },
+
+            error: function () {
+                showErrorMessage();
+            }
+        });
+
+        modal.modal('show');
+    }); 
 
     //Handle Change Status
-    $('.js-toggle-status').on('click', function () {
+    $('body').delegate('.js-toggle-status', 'click', function () {
         var btn = $(this);
 
         bootbox.confirm({

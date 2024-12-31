@@ -2,7 +2,7 @@
 {
 	public class CategoriesController : Controller
 	{
-		private ApplicationDbContext _context;
+		private readonly ApplicationDbContext _context;
 		private readonly IMapper _mapper;
 
         public CategoriesController(ApplicationDbContext context, IMapper mapper = null)
@@ -19,7 +19,6 @@
             return View(viewmodel);
 		}
 		[HttpGet]
-        [AjaxOnly]
         public IActionResult Create()
 		{
 			return View("Form");
@@ -69,9 +68,10 @@
             category.LastUpdetedOn = DateTime.Now;
 
 			_context.SaveChanges();
-			TempData["Message"] = "Saved successflly";
+            var viewmodel = _mapper.Map<CategoryViewModel>(category);
+            TempData["Message"] = "Saved successflly";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), viewmodel);
         }
 
         [HttpPost]

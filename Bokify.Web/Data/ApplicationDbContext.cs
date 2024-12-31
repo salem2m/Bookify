@@ -6,6 +6,8 @@
             : base(options)
         {
         }
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
+        
     }
 }
