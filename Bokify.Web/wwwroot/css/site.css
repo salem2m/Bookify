@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+/*start override theme*/
+.form-floating > .form-select {
+    padding-bottom: .225rem;
+}
+/*start override theme*/

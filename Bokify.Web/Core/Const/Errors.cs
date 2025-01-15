@@ -4,5 +4,7 @@
     {
         public const string MaxLinth = "Max Lenth cannot be mor than {1} chr!";
         public const string DuplicateValue = "{0} with the same Name is Already Exists!";
+        public const string NotAllowedExtensions = "only jpg, jpeg or png are allowed";
+        public const string MaxSize = "File cannot be mor than 2mb!";
     }
 }
