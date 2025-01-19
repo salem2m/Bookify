@@ -107,7 +107,7 @@
                     return View("Form", PopulateViewModel(model));
                 }
                 var imgName = $"{Guid.NewGuid()}{extension}";
-                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/imges/books", imgName);
+                var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imgName);
                 var stream = System.IO.File.Create(path);
                 model.Image.CopyTo(stream);
                 model.ImageUrl = imgName;
@@ -126,6 +126,12 @@
             return RedirectToAction(nameof(Index));
         }
 
+        public IActionResult AllowItem(BookFormViewModel model)
+        {
+            var book = _context.Books.SingleOrDefault(c => c.Title == model.Title && c.AuthorId==model.AuthorId);
+            var IsAllowed = book is null || book.Id.Equals(model.Id);
+            return Json(IsAllowed);
+        }
 
         private BookFormViewModel PopulateViewModel(BookFormViewModel? model = null)
         {

@@ -3,6 +3,7 @@ using Bokify.Web.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 
 namespace Bokify.Web
 {
@@ -23,6 +24,8 @@ namespace Bokify.Web
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+
+            builder.Services.AddExpressiveAnnotations();
 
             var app = builder.Build();
 
