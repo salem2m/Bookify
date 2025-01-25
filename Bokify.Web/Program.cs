@@ -1,5 +1,6 @@
 using Bokify.Web.Core.Mapping;
 using Bokify.Web.Data;
+using Bokify.Web.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace Bokify.Web
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));
 
             builder.Services.AddExpressiveAnnotations();
 
