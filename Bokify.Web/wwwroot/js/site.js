@@ -3,8 +3,12 @@ var datatable;
 var updatedRow;
 var exportedCols = [];
 
-function onModalBegin() {
+function disableSubmitButton() {
     $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+}
+
+function onModalBegin() {
+    disableSubmitButton();
 }
 function showSuccessMessage(message = 'Saved successfully') {
     Swal.fire({
@@ -149,14 +153,32 @@ var KTDatatables = function () {
 
 $(document).ready(function () {
 
-    //TinyMCE
-    var options = { selector: ".js-tinymce", height: "422" };
+    //Disable submit button
+    $('form').on('submit', function () {
+        if ($('.js-tinymce').length > 0) {
+            //to validate the description part
+            $('.js-tinymce').each(function () {
+                var input = $(this);
 
-    if (KTThemeMode.getMode() === "dark") {
-        options["skin"] = "oxide-dark";
-        options["content_css"] = "dark";
+                var content = tinyMCE.get(input.attr('id')).getContent();
+                input.val(content);
+            });
+        }
+
+        var isValid = $(this).valid();
+        if (isValid) disableSubmitButton();
+    });
+
+    //TinyMCE
+    if ($('.js-tinymce').length > 0 /*because it's rendered in all pages*/) {
+        var options = { selector: ".js-tinymce", height: "422" };
+
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+        tinymce.init(options);
     }
-    tinymce.init(options);
 
     //datepicker
     $('.js-datepicker').daterangepicker({
@@ -164,11 +186,15 @@ $(document).ready(function () {
         singleDatePicker: true,
         autoApply: true,
         drops: 'up',
-        //maxDate: new Date()
+        maxDate: new Date()
     });
 
     //render select2
     $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        var select = $(this);
+        $('form').validate().element('#' + select.attr('id'));
+    });
 
     //sweet alert
     var message = $('#Message').text();

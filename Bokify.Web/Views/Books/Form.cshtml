@@ -2,35 +2,24 @@
 @{
     ViewData["Title"] = "Book Form";
 }
-<div class="alert bg-light-primary border border-primary border-3 border-dashed d-flex justify-content-between w-100 p-5 mb-10 m">
-    <div class="d-flex align-items-center">
-        <div class="symbol symbol-35px me-2">
-            <div class="symbol-label fs-2 fw-semibold text-success">
-                <!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
-                <span class="svg-icon svg-icon-2 svg-icon-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" class="mdl-js"><path d="M480-160q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740v484q51-32 107-48t113-16q36 0 70.5 6t69.5 18v-480q15 5 29.5 10.5T898-752q11 5 16.5 15t5.5 21v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59Zm80-200v-380l200-200v400L560-360Zm-160 65v-396q-33-14-68.5-21.5T260-720q-37 0-72 7t-68 21v397q35-13 69.5-19t70.5-6q36 0 70.5 6t69.5 19Zm0 0v-396 396Z" /></svg>
-                </span>
-                <!--end::Svg Icon-->
-            </div>
-        </div>
-        <div class="d-flex flex-column pe-0 pe-sm-10">
-            <h5 class="mb-1">
-                @(Model.Id.Equals(0) ? "Add " : "Edit ")Books
-            </h5>
-        </div>
-    </div>
-</div>
+
 <div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">@(Model.Id.Equals(0) ? "Add " : "Edit ")Books</h3>
+    </div>
     <div class="card-body">
-        <form method="post" asp-controller="Books" enctype="multipart/form-data">
+        <form method="post" asp-controller="Books" enctype="multipart/form-data" id="Form">
             @if (Model.Id > 0)
             {
                 <input type="hidden" asp-for="Id" />
             }
             <div class="d-flex justify-content-center">
                 
-                <!--begin::Image input--><!---------------------------------retern the image from local servar-----url(/images///(!string.IsNullOrEmpty(Model.ImageUrl) ? $"/books/{Model.ImageUrl}" : "image-placeholder.jpg"))-->
-                <div class="image-input image-input-empty mb-10" data-kt-image-input="true" style="background-image: url(@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/image-placeholder.jpg" : Model.ImageUrl))">
+                <!--begin::Image input-->
+                <!---------------------------------retern the image from local servar-----url((string.IsNullOrEmpty(Model.ImageUrl) ? "/images/image-placeholder.jpg" : Model.ImageThumbnailUrl))
+                                                                            retern the image from cloudinary-----url((string.IsNullOrEmpty(Model.ImageUrl) ? "/images/image-placeholder.jpg" : Model.ImageUrl))
+                -->
+                <div class="image-input image-input-empty mb-10" data-kt-image-input="true" style="background-image: url(@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/image-placeholder.jpg" : Model.ImageThumbnailUrl))">
                     <!--begin::Image preview wrapper-->
                     <div class="image-input-wrapper w-120px h-200px"></div>
                     <!--end::Image preview wrapper-->
@@ -71,7 +60,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Title" asp-for="Title" />
+                                    <input type="text" class="form-control form-control-solid" placeholder="Title" asp-for="Title" />
                                     <label asp-for="Title"> </label>
                                 </div>
                                 <span asp-validation-for="Title" class="text-danger d-block"></span>
@@ -83,7 +72,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="form-floating mb-2">
-                                    <select class="form-select js-select2" asp-for="AuthorId" asp-items="@Model.Author" data-placeholder="select an Author"><option value="">Select Author</option> </select>
+                                    <select class="form-select form-select-solid js-select2" asp-for="AuthorId" asp-items="@Model.Author" data-placeholder="select an Author"><option value="">Select Author</option> </select>
                                     <label asp-for="AuthorId"> </label>
                                 </div>
                                 <span asp-validation-for="AuthorId" class="text-danger d-block"></span>
@@ -95,7 +84,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="mb-2">
-                                    <select class="form-select js-select2" asp-for="SelectedCategories" asp-items="@Model.Categories" data-placeholder="Select Categories"> </select>
+                                    <select class="form-select form-select-solid form-select form-select-solid-solid js-select2" asp-for="SelectedCategories" asp-items="@Model.Categories" data-placeholder="Select Categories"> </select>
                                 </div>
                                 <span asp-validation-for="SelectedCategories" class="text-danger d-block"></span>
                             </div>
@@ -106,7 +95,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="publisher" asp-for="publisher" />
+                                    <input type="text" class="form-control form-control-solid" placeholder="publisher" asp-for="publisher" />
                                     <label asp-for="publisher"> </label>
                                 </div>
                                 <span asp-validation-for="publisher" class="text-danger d-block"></span>
@@ -118,7 +107,7 @@
                         <div class="col">
                             <div class="mb-4">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control js-datepicker" placeholder="publishingDate" asp-for="publishingDate" />
+                                    <input type="text" class="form-control form-control-solid js-datepicker" placeholder="publishingDate" asp-for="publishingDate" />
                                     <label asp-for="publishingDate"> </label>
                                 </div>
                                 <span asp-validation-for="publishingDate" class="text-danger d-block"></span>
@@ -139,7 +128,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="form-floating mb-2">
-                                    <input type="text" class="form-control" placeholder="Hall" asp-for="Hall" />
+                                    <input type="text" class="form-control form-control-solid" placeholder="Hall" asp-for="Hall" />
                                     <label asp-for="Hall"> </label>
                                 </div>
                                 <span asp-validation-for="Hall" class="text-danger d-block"></span>
@@ -153,7 +142,7 @@
                         <div class="col">
                             <div class="mb-5">
                                 <div class="form-floating mb2">
-                                    <textarea class="form-control js-tinymce" placeholder="Leave a comment here" asp-for="Description" style="height: 100px"></textarea>
+                                    <textarea class="form-control form-control-solid js-tinymce" placeholder="Leave a comment here" asp-for="Description" style="height: 100px"></textarea>
                                     <label asp-for="Description"></label>
                                 </div>
                                 <span asp-validation-for="Description" class="text-danger d-block"></span>
@@ -161,17 +150,17 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
-            <button type="submit" class="btn btn-primary">
-                <span class="indicator-label">Save</span>
-                <span class="indicator-progress">
-                    Please wait...<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                </span>
-            </button>
-
         </form>
+    </div>
+    <div class="card-footer ms-2">
+        <button type="submit" class="btn btn-primary" form="Form">
+            <span class="indicator-label">Save</span>
+            <span class="indicator-progress">
+                Please wait...<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+        </button>
+        <a class="btn btn-light text-primary ms-3" asp-action="Index">Cancel</a>
     </div>
 </div>
 
