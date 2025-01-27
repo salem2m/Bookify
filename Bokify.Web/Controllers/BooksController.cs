@@ -40,6 +40,23 @@ namespace Bokify.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Details(int id)
+        {
+            var book = _context.Books
+                .Include(a=>a.Author)
+                .Include(a=>a.Categories)
+                .ThenInclude(a=>a.Category)
+                .SingleOrDefault(b=>b.Id==id);
+
+            if(book is null)
+                return NotFound();
+
+            var bviwemodel=_mapper.Map<BookViewModel>(book);
+
+            return View(bviwemodel);
+        }
+
         public IActionResult Create ()
         {
             
@@ -112,7 +129,7 @@ namespace Bokify.Web.Controllers
             _context.Add(book);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new {id = book.Id});
         }
 
         public IActionResult Edit(int id)
@@ -213,7 +230,7 @@ namespace Bokify.Web.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
         public IActionResult AllowItem(BookFormViewModel model)
