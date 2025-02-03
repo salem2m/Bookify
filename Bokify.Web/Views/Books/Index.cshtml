@@ -1,1 +1,72 @@
-﻿<a class="btn btn-primary" asp-action="Create">Create</a>
+﻿@{
+    ViewData["Title"] = "Books";
+}
+<div class="alert bg-light-primary border border-primary border-1 border-dashed d-flex justify-content-between w-100 p-2 mb-5 m">
+    <div class="d-flex align-items-center">
+        <div class="symbol symbol-35px me-2">
+            <div class="symbol-label fs-2 fw-semibold text-success">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
+                <span class="svg-icon svg-icon-2 svg-icon-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor" class="mdl-js"><path d="M480-160q-48-38-104-59t-116-21q-42 0-82.5 11T100-198q-21 11-40.5-1T40-234v-482q0-11 5.5-21T62-752q46-24 96-36t102-12q58 0 113.5 15T480-740v484q51-32 107-48t113-16q36 0 70.5 6t69.5 18v-480q15 5 29.5 10.5T898-752q11 5 16.5 15t5.5 21v482q0 23-19.5 35t-40.5 1q-37-20-77.5-31T700-240q-60 0-116 21t-104 59Zm80-200v-380l200-200v400L560-360Zm-160 65v-396q-33-14-68.5-21.5T260-720q-37 0-72 7t-68 21v397q35-13 69.5-19t70.5-6q36 0 70.5 6t69.5 19Zm0 0v-396 396Z" /></svg>
+                </span>
+                <!--end::Svg Icon-->
+            </div>
+        </div>
+        <div>
+            <h5>
+                Books
+            </h5>
+
+        </div>
+
+    </div>
+    <a  asp-action="Create" class="btn btn-sm btn-primary">
+        <i class="bi bi-plus-square-dotted"></i>
+        Add Book
+    </a>
+</div>
+<div class="card shadow-sm">
+    <div class="card-header align-items-center py-5 gap-2 gap-md-5">
+        <div class="card-title">
+            <div class="d-flex align-items-center position-relative my-1">
+                <span class="svg-icon svg-icon-1 position-absolute ms-4">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor"></rect>
+                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor"></path>
+                    </svg>
+                </span>
+                <input type="text" data-kt-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search by title or author..." />
+            </div>
+        </div>
+    </div>
+    <div class="card-body pt-0">
+        <div class="table-responsive">
+            <table id="Books" class="table table-row-dashed table-row-gray-300 gy-2 align-middle">
+                <thead>
+                    <tr class="fw-bold fs-6 text-gray-800">
+                        <th class ="d-none"></th>
+                        <th>Book</th>
+                        <th>Publisher</th>
+                        <th>Publisheing Date</th>
+                        <th>Hall</th>
+                        <th>Categories</th>
+                        <th>Rental</th>
+                        <th>Status</th>
+                        <th >Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link href="~/plugins/datatables/datatables.bundle.css" rel="stylesheet" />
+}
+
+@Html.AntiForgeryToken()
+@section Scripts{
+    <script src="~/js/books.js" asp-append-version="true"></script>
+}

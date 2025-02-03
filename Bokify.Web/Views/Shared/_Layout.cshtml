@@ -11,12 +11,13 @@
     <!--begin::Global Stylesheets Bundle(used by all pages)-->
     <link rel="stylesheet" href="~/assets/css/plugins.bundle.css" type="text/css" />
     <link rel="stylesheet" href="~/assets/css/style.bundle.css" type="text/css" />
-
+    <link rel="stylesheet" href="~/lib/animate.css/animate.min.css" />
+    
     @await RenderSectionAsync("Styles", required: false)
 
     <!--end::Global Stylesheets Bundle-->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Bookify.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Bokify.Web.styles.css" asp-append-version="true" />
 </head>
 <body id="kt_body" class="header-fixed header-tablet-and-mobile-fixed page-loading">
     <!--begin::Theme mode setup on page load-->
@@ -75,6 +76,7 @@
     <!--begin::Global Javascript Bundle(used by all pages)-->
     <script src="~/assets/js/plugins.bundle.js"></script>
     <script src="~/assets/js/scripts.bundle.js"></script>
+    <script src="~/assets/plugins/datatables/datatables.bundle.js"></script>
     <!--end::Global Javascript Bundle-->
     <script src="~/lib/bootbox.js/bootbox.min.js"></script>
     @await RenderSectionAsync("plugins", required: false)

@@ -69,7 +69,7 @@ namespace Bokify.Web.Controllers
                 return NotFound();
 
             author = _mapper.Map(model, author);
-            author.LastUpdetedOn = DateTime.Now;
+            author.LastUpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
             var viewmodel = _mapper.Map<AuthorViewModel>(author);
@@ -86,11 +86,11 @@ namespace Bokify.Web.Controllers
                 return NotFound();
 
             author.IsDeleted = !author.IsDeleted;
-            author.LastUpdetedOn = DateTime.Now;
+            author.LastUpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
 
-            return Ok(author.LastUpdetedOn.ToString());
+            return Ok(author.LastUpdatedOn.ToString());
         }
 
         public IActionResult AllowItem(AuthorFormViewModel model)

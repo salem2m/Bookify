@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 using static System.Net.Mime.MediaTypeNames;
 using System.IO;
 using Image = SixLabors.ImageSharp.Image;
+using Bokify.Web.Filters;
+using System.Linq.Dynamic.Core;
 
 namespace Bokify.Web.Controllers
 {
@@ -39,6 +41,38 @@ namespace Bokify.Web.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            var skip = int.Parse(Request.Form["start"]);
+            var pageSize = int.Parse(Request.Form["length"]);
+
+            var searchValue = Request.Form["search[value]"];
+
+            var sortColumnIndex = Request.Form["order[0][column]"];
+            var sortColumn = Request.Form[$"columns[{sortColumnIndex}][name]"];
+            var sortColumnDirection = Request.Form["order[0][dir]"];
+
+            IQueryable<Book> books = _context.Books
+                .Include(b => b.Author)
+                .Include(b => b.Categories)
+                .ThenInclude(c => c.Category);
+
+            if (!string.IsNullOrEmpty(searchValue))
+                books = books.Where(b => b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue));
+
+            books = books.OrderBy($"{sortColumn} {sortColumnDirection}");
+
+            var data = books.Skip(skip).Take(pageSize).ToList();
+
+            var mappedData = _mapper.Map<IEnumerable<BookViewModel>>(data);
+
+            var recordsTotal = books.Count();
+
+            var jsonData = new { recordsFiltered = recordsTotal, recordsTotal, data = mappedData };
+
+            return Ok(jsonData);
         }
 
         public IActionResult Details(int id)
@@ -221,7 +255,7 @@ namespace Bokify.Web.Controllers
                 model.ImageThumbnailUrl = book.ImageThumbnailUrl;
 
             book =_mapper.Map(model, book);
-            book.LastUpdetedOn = DateTime.Now;
+            book.LastUpdatedOn = DateTime.Now;
             //book.ImageThumbnailUrl = GetThumbnailUrl(book.ImageUrl!);
             //book.ImagePublicId = imgPubId;
 
@@ -231,6 +265,23 @@ namespace Bokify.Web.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Details), new { id = book.Id });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ChangeStatus(int id)
+        {
+
+            var book = _context.Books.Find(id);
+            if (book is null)
+                return NotFound();
+
+            book.IsDeleted = !book.IsDeleted;
+            book.LastUpdatedOn = DateTime.Now;
+
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         public IActionResult AllowItem(BookFormViewModel model)

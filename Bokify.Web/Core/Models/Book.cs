@@ -9,8 +9,8 @@
         public int AuthorId { get; set; }
         public Author? Author { get; set; }
         [MaxLength (150)]
-        public string publisher { get; set; } = null!;
-        public DateTime publishingDate { get; set; }
+        public string Publisher { get; set; } = null!;
+        public DateTime PublishingDate { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageThumbnailUrl { get; set; }
         public string? ImagePublicId { get; set; }

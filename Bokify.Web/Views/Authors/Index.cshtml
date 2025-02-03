@@ -15,7 +15,7 @@
     <link href="~/plugins/datatables/datatables.bundle.css" rel="stylesheet" />
 }
 
-<div class="alert bg-light-primary border border-primary border-3 border-dashed d-flex justify-content-between w-100 p-5 mb-10 m">
+<div class="alert bg-light-primary border border-primary border-1 border-dashed d-flex justify-content-between w-100 p-2 mb-5 m">
     <div class="d-flex align-items-center">
         <div class="symbol symbol-35px me-2">
             <div class="symbol-label fs-2 fw-semibold text-success">
@@ -44,42 +44,10 @@
 </div>
 
 <div class="card shadow-sm">
-    <div class="card-header align-items-center py-2 gap-2 gap-md-5">
-        <div class="card-title">
-            <div class="d-flex align-items-center position-relative my-1">
-                <span class="svg-icon svg-icon-1 position-absolute ms-4">
-                    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" class="DocSearch-Search-Icon"><path d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                </span>
-                <input type="text" data-kt-filter="search" class="form-control form-control-solid w-250px ps-14" placeholder="Search" />
-            </div>
-            <div id="kt_datatable_example_1_export" class="d-none"></div>
-        </div>
-
-        <div class="card-toolbar flex-row-fluid justify-content-end gap-5">
-            <button type="button" class="btn btn-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                <span class="svg-icon svg-icon-1 position-absolutems-4"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file-arrow-right"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M14 3v4a1 1 0 0 0 1 1h4"></path><path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"></path><path d="M9 15h6"></path><path d="M12.5 17.5l2.5 -2.5l-2.5 -2.5"></path></svg></span>
-                Export
-            </button>
-            <div id="kt_datatable_example_export_menu" class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-200px py-4" data-kt-menu="true">
-                <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" data-kt-export="copy">Copy to clipbord</a>
-                </div>
-                <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" data-kt-export="excel">Export as Excel</a>
-                </div>
-                <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" data-kt-export="csv">Export as CSV</a>
-                </div>
-                <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" data-kt-export="pdf">Export as PDF</a>
-                </div>
-            </div>
-            <div id="kt_datatable_example_buttons" class="d-none"></div>
-        </div>
-    </div>
+    <partial name="_DataTablesCardHeader" />
     <div class="card-body pt-0">
         <div class="table-responsive">
-            <table class="table table-row-dashed table-row-gray-300 gy-7 js-datatables" data-document-title="Authors">
+            <table class="table table-row-dashed table-row-gray-300 gy-2 align-middle js-datatables" data-document-title="Authors">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800">
                         <th>Name</th>

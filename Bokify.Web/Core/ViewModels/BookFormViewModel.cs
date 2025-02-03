@@ -14,10 +14,10 @@ namespace Bokify.Web.Core.ViewModels
         public int AuthorId { get; set; }
         public IEnumerable<SelectListItem>? Author { get; set; }
         [MaxLength(150, ErrorMessage = Errors.MaxLinth)]
-        public string publisher { get; set; } = null!;
+        public string Publisher { get; set; } = null!;
         [Display(Name = "publishing Date")]
         [AssertThat("publishingDate <= Today()", ErrorMessage =Errors.FutureDate)]
-        public DateTime publishingDate { get; set; } = DateTime.Now;
+        public DateTime PublishingDate { get; set; } = DateTime.Now;
         public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }
         public string? ImageThumbnailUrl { get; set; }

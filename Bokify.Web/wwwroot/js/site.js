@@ -258,17 +258,17 @@ $(document).ready(function () {
                             '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                         },
 
-                        success: function (LastUpdetedOn) {
+                        success: function (LastUpdatedOn) {
                             var raw = btn.parents('tr')
                             var status = raw.find('.js-status')
                             var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
                             status.text(newStatus).toggleClass('badge-light-success badge-light-danger')
-                            raw.find('.js-lastupdatedon').html(LastUpdetedOn);
+                            raw.find('.js-lastupdatedon').html(LastUpdatedOn);
                             raw.addClass('animate__animated animate__flash');
                             showSuccessMessage();
                         },
 
-                        Error: function (LastUpdetedOn) {
+                        error: function () {
                             showErrorMessage();
                         }
                     });
