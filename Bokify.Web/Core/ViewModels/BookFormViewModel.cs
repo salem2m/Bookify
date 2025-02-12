@@ -16,7 +16,7 @@ namespace Bokify.Web.Core.ViewModels
         [MaxLength(150, ErrorMessage = Errors.MaxLinth)]
         public string Publisher { get; set; } = null!;
         [Display(Name = "publishing Date")]
-        [AssertThat("publishingDate <= Today()", ErrorMessage =Errors.FutureDate)]
+        [AssertThat("PublishingDate <= Today()", ErrorMessage =Errors.FutureDate)]
         public DateTime PublishingDate { get; set; } = DateTime.Now;
         public IFormFile? Image { get; set; }
         public string? ImageUrl { get; set; }

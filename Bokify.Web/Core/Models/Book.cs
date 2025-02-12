@@ -18,6 +18,7 @@
         public string Hall { get; set; } = null!;
         public bool IsAvailableForRental { get; set; }
         public string Description { get; set; } = null!;
-        public ICollection<BookCategory> Categories {  get; set; } = new List<BookCategory> (); 
+        public ICollection<BookCategory> Categories {  get; set; } = new List<BookCategory> ();
+        public ICollection<BookCopy> Copies { get; set; } = new List<BookCopy>();
     }
 }
