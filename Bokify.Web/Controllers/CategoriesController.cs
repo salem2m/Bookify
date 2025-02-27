@@ -1,6 +1,9 @@
-﻿namespace Bokify.Web.Controllers
+﻿using Bokify.Web.Core.Consts;
+
+namespace Bokify.Web.Controllers
 {
-	public class CategoriesController : Controller
+    
+    public class CategoriesController : Controller
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly IMapper _mapper;
@@ -11,6 +14,7 @@
             _mapper = mapper;
         }
         [HttpGet]
+        
 		public IActionResult Index()
 		{
 			var categories = _context.Categories.ToList();

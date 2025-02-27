@@ -1,6 +1,8 @@
-﻿namespace Bokify.Web.Data
+﻿using Bokify.Web.Core.Models;
+
+namespace Bokify.Web.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

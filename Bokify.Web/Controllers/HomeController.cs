@@ -1,9 +1,11 @@
+using Bokify.Web.Core.Consts;
 using Bokify.Web.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Bokify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Admin)]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

@@ -154,7 +154,7 @@ var KTDatatables = function () {
 $(document).ready(function () {
 
     //Disable submit button
-    $('form').on('submit', function () {
+    $('form').not('#SignOut').on('submit', function () {
         if ($('.js-tinymce').length > 0) {
             //to validate the description part
             $('.js-tinymce').each(function () {
@@ -277,5 +277,10 @@ $(document).ready(function () {
         });
 
     })
+
+    //Handel Sign Out
+    $('.js-signout').on('click', function () {
+        $('#SignOut').submit();
+    });
 
 });

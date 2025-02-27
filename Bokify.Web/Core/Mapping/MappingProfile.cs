@@ -28,6 +28,9 @@
                 .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book!.Title));
 
             CreateMap<BookCopy, BookCopyFormViewModel>();
+
+            //Users
+            CreateMap<ApplicationUser, UsersViewModel>();
         }
     }
 }
