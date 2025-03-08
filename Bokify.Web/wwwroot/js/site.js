@@ -22,10 +22,11 @@ function showSuccessMessage(message = 'Saved successfully') {
 }
 
 function showErrorMessage(message = 'Something went wrong!') {
+    
     Swal.fire({
         icon: 'error',
         title: 'Oops...',
-        text: message,
+        text: message.responseText !== undefined ? message.responseText : message,
         customClass: {
             confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-activ-lihgt-primary"
         }
@@ -46,6 +47,13 @@ function OnModalSuccess(row) {
 }
 function onModalComplete() {
     $('body :submit').removeAttr('disabled').removeAttr('data-kt-indicator');
+}
+function select2() {
+    $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        var select = $(this);
+        $('form').not('#SignOut').validate().element('#' + select.attr('id'));
+    });
 }
 
 //DataTables
@@ -190,11 +198,7 @@ $(document).ready(function () {
     });
 
     //render select2
-    $('.js-select2').select2();
-    $('.js-select2').on('select2:select', function (e) {
-        var select = $(this);
-        $('form').validate().element('#' + select.attr('id'));
-    });
+    select2()
 
     //sweet alert
     var message = $('#Message').text();
@@ -221,7 +225,7 @@ $(document).ready(function () {
             success: function (form) {
                 modal.find('.modal-body').html(form);
                 $.validator.unobtrusive.parse(modal);
-                
+                select2()
             },
 
             error: function () {

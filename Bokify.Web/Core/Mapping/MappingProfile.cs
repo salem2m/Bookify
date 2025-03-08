@@ -31,6 +31,10 @@
 
             //Users
             CreateMap<ApplicationUser, UsersViewModel>();
+            CreateMap<UserFormViewModel, ApplicationUser>()
+                .ForMember(dest => dest.NormalizedEmail, opt => opt.MapFrom(e => e.Email.ToUpper()))
+                .ForMember(dest => dest.NormalizedUserName, opt => opt.MapFrom(e => e.UserName.ToUpper()))
+                .ReverseMap();
         }
     }
 }

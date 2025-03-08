@@ -1,4 +1,5 @@
 ﻿using Bokify.Web.Core.Consts;
+using System.Security.Claims;
 
 namespace Bokify.Web.Controllers
 {
@@ -36,6 +37,8 @@ namespace Bokify.Web.Controllers
 
             var category = _mapper.Map<Category>(model);
 
+            category.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
             _context.Add(category);
 			_context.SaveChanges();
 
@@ -70,8 +73,9 @@ namespace Bokify.Web.Controllers
 
 			category = _mapper.Map(model, category);
             category.LastUpdatedOn = DateTime.Now;
+            category.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-			_context.SaveChanges();
+            _context.SaveChanges();
             var viewmodel = _mapper.Map<CategoryViewModel>(category);
             TempData["Message"] = "Saved successflly";
 
@@ -89,6 +93,7 @@ namespace Bokify.Web.Controllers
 
             category.IsDeleted = !category.IsDeleted;
             category.LastUpdatedOn = DateTime.Now;
+            category.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _context.SaveChanges();
 

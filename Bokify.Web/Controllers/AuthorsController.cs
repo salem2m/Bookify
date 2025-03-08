@@ -2,6 +2,7 @@
 using Bokify.Web.Filters;
 using Bokify.Web.Core.Models;
 using Bokify.Web.Core.ViewModels;
+using System.Security.Claims;
 namespace Bokify.Web.Controllers
 {
     public class AuthorsController : Controller
@@ -35,8 +36,8 @@ namespace Bokify.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
             var author = _mapper.Map<Author>(model);
-         
 
+            author.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             _context.Add(author);
             _context.SaveChanges();
 
@@ -70,7 +71,7 @@ namespace Bokify.Web.Controllers
 
             author = _mapper.Map(model, author);
             author.LastUpdatedOn = DateTime.Now;
-
+            author.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             _context.SaveChanges();
             var viewmodel = _mapper.Map<AuthorViewModel>(author);
 
@@ -87,7 +88,7 @@ namespace Bokify.Web.Controllers
 
             author.IsDeleted = !author.IsDeleted;
             author.LastUpdatedOn = DateTime.Now;
-
+            author.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             _context.SaveChanges();
 
             return Ok(author.LastUpdatedOn.ToString());

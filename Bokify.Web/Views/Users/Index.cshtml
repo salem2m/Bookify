@@ -38,7 +38,8 @@
         </div>
 
     </div>
-    <a asp-controller="Users" asp-action="Create" class="btn btn-sm btn-primary">
+    <a href="javascript:;" class="btn btn-sm btn-primary js-render-modal"
+       data-title="Add User" data-url="/Users/Create">
         <i class="bi bi-plus-square-dotted"></i>
         Add
     </a>
@@ -71,12 +72,12 @@
     </div>
 </div>
 
-@section plugins {
-    <script src="~/plugins/datatables/datatables.bundle.js"></script>
-}
-
 @Html.AntiForgeryToken()
 @section Scripts
 {
+    <partial name="_ValidationScriptsPartial" />
+}
 
+@section plugins {
+    <script src="~/plugins/datatables/datatables.bundle.js"></script>
 }

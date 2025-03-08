@@ -7,6 +7,7 @@ using System.IO;
 using Image = SixLabors.ImageSharp.Image;
 using Bokify.Web.Filters;
 using System.Linq.Dynamic.Core;
+using System.Security.Claims;
 
 namespace Bokify.Web.Controllers
 {
@@ -161,6 +162,8 @@ namespace Bokify.Web.Controllers
             foreach (var category in model.SelectedCategories)
                 book.Categories.Add(new BookCategory {CategoryId = category});
 
+            book.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
             _context.Add(book);
             _context.SaveChanges();
 
@@ -185,7 +188,12 @@ namespace Bokify.Web.Controllers
         {
             if (!ModelState.IsValid)
                 return View("Form", PopulateViewModel(model));
-            var book = _context.Books.Include(b => b.Categories).SingleOrDefault(c => c.Id == model.Id);
+
+            var book = _context.Books
+                .Include(b => b.Categories)
+                .Include(b => b.Copies)
+                .SingleOrDefault(c => c.Id == model.Id);
+
             if (book is null)
                 return NotFound();
 
@@ -257,8 +265,12 @@ namespace Bokify.Web.Controllers
 
             book =_mapper.Map(model, book);
             book.LastUpdatedOn = DateTime.Now;
+            book.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             //book.ImageThumbnailUrl = GetThumbnailUrl(book.ImageUrl!);
             //book.ImagePublicId = imgPubId;
+            if (!model.IsAvailableForRental)
+                foreach (var copy in book.Copies)
+                    copy.IsAvailableForRental = false;
 
             foreach (var category in model.SelectedCategories)
                 book.Categories.Add(new BookCategory { CategoryId = category });
@@ -279,6 +291,7 @@ namespace Bokify.Web.Controllers
 
             book.IsDeleted = !book.IsDeleted;
             book.LastUpdatedOn = DateTime.Now;
+            book.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _context.SaveChanges();
 

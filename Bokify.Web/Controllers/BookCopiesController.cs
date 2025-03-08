@@ -1,5 +1,6 @@
 ﻿using Bokify.Web.Filters;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Bokify.Web.Controllers
 {
@@ -14,6 +15,7 @@ namespace Bokify.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         [Filters.AjaxOnly]
         public IActionResult Create(int bookId)
         {
@@ -46,8 +48,10 @@ namespace Bokify.Web.Controllers
             BookCopy copy = new()
             {
                 EditionNumber = model.EditionNumber,
-                IsAvailableForRental = book.IsAvailableForRental && model.IsAvailableForRental
+                IsAvailableForRental = book.IsAvailableForRental && model.IsAvailableForRental,
+                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
+            
 
             book.Copies.Add(copy);
             _context.SaveChanges();
@@ -57,6 +61,7 @@ namespace Bokify.Web.Controllers
             return PartialView("_BookCopyRow", viewModel);
         }
 
+        [HttpGet]
         [Filters.AjaxOnly]
         public IActionResult Edit(int id)
         {
@@ -86,6 +91,7 @@ namespace Bokify.Web.Controllers
             copy.EditionNumber = model.EditionNumber;
             copy.IsAvailableForRental = copy.Book!.IsAvailableForRental && model.IsAvailableForRental;
             copy.LastUpdatedOn = DateTime.Now;
+            copy.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _context.SaveChanges();
 
@@ -105,6 +111,7 @@ namespace Bokify.Web.Controllers
 
             copy.IsDeleted = !copy.IsDeleted;
             copy.LastUpdatedOn = DateTime.Now;
+            copy.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             _context.SaveChanges();
 

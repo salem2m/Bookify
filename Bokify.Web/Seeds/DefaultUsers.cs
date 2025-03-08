@@ -15,7 +15,7 @@ namespace Bokify.Web.Seeds
                 EmailConfirmed = true
             };
 
-            var user = await userManager.FindByNameAsync(admin.UserName);
+            var user = await userManager.FindByEmailAsync(admin.Email);
 
             if(user is null)
             {

@@ -5,12 +5,13 @@ namespace Bokify.Web.Core.ViewModels
     public class BookFormViewModel
     {
         public int Id { get; set; }
-        [MaxLength(300, ErrorMessage =Errors.MaxLinth)]
-        [Remote("AllowItem", null, AdditionalFields = "Id, AuthorId", ErrorMessage = Errors.DuplicateBook)]
+        [MaxLength(300, ErrorMessage =Errors.MaxLinth),
+            RegularExpression(RegexPaterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
+        [Remote("AllowItem", null!, AdditionalFields = "Id, AuthorId", ErrorMessage = Errors.DuplicateBook)]
 
         public string Title { get; set; } = null!;
         [Display(Name ="Author")]
-        [Remote("AllowItem", null, AdditionalFields = "Id, Title", ErrorMessage = Errors.DuplicateBook)]
+        [Remote("AllowItem", null!, AdditionalFields = "Id, Title", ErrorMessage = Errors.DuplicateBook)]
         public int AuthorId { get; set; }
         public IEnumerable<SelectListItem>? Author { get; set; }
         [MaxLength(150, ErrorMessage = Errors.MaxLinth)]
