@@ -1,12 +1,10 @@
 using Bokify.Web.Core.Mapping;
-using Bokify.Web.Data;
+using Bokify.Web.Helpers;
 using Bokify.Web.Seeds;
 using Bokify.Web.Settings;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +29,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     //options.Password.RequiredUniqueChars = 1;
     options.User.RequireUniqueEmail = true;
 });
+
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
 builder.Services.AddControllersWithViews();
 

@@ -53,6 +53,7 @@ namespace Bokify.Web.Controllers
                 FullName = model.FullName,
                 UserName = model.UserName,
                 Email = model.Email,
+                EmailConfirmed = true,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
 
@@ -209,5 +210,26 @@ namespace Bokify.Web.Controllers
 
             return Ok(user.LastUpdatedOn.ToString());
         }
-    }
+
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Unlock(string id)
+		{
+			if (!ModelState.IsValid)
+				return BadRequest();
+
+			var user = await _userManager.FindByIdAsync(id);
+
+			if (user is null)
+				return BadRequest();
+
+			var isLockedOut = await _userManager.IsLockedOutAsync(user);
+            if (isLockedOut)
+                await _userManager.SetLockoutEndDateAsync(user, null);
+
+			await _userManager.UpdateAsync(user);
+
+			return Ok();
+		}
+	}
 }

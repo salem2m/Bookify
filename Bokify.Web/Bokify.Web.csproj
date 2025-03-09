@@ -27,8 +27,4 @@
     <PackageReference Include="UoN.ExpressiveAnnotations.NetCore" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\assets\images\" />
-  </ItemGroup>
-
 </Project>

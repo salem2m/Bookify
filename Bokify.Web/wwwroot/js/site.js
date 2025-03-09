@@ -281,6 +281,45 @@ $(document).ready(function () {
         });
 
     })
+    //Handel Confirm
+    $('body').delegate('.js-confirm', 'click', function () {
+        var btn = $(this);
+
+        bootbox.confirm({
+            message: btn.data('message'),
+            size: "mediam",
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-xs btn-success btn-hover-rise'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-xs btn-secondary btn-hover-rise'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.post({
+                        url: btn.data('url'),
+
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+
+                        success: function () {
+                            showSuccessMessage();
+                        },
+
+                        error: function () {
+                            showErrorMessage();
+                        }
+                    });
+                }
+            }
+        });
+
+    })
 
     //Handel Sign Out
     $('.js-signout').on('click', function () {
