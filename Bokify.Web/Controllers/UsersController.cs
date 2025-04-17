@@ -1,7 +1,12 @@
 ﻿using Bokify.Web.Core.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
+using System.Text.Encodings.Web;
+using System.Text;
+using Bokify.Web.Services;
 
 namespace Bokify.Web.Controllers
 {
@@ -9,16 +14,22 @@ namespace Bokify.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
         private readonly IMapper _mapper;
-        public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _mapper = mapper;
-            
-        }
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
 
-        public async Task<IActionResult> Index()
+		public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder)
+		{
+			_userManager = userManager;
+			_roleManager = roleManager;
+			_mapper = mapper;
+			_emailSender = emailSender;
+			_webHostEnvironment = webHostEnvironment;
+			_emailBodyBuilder = emailBodyBuilder;
+		}
+
+		public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
             var usersViewModel = _mapper.Map<IEnumerable<UsersViewModel>>(users);
@@ -53,15 +64,37 @@ namespace Bokify.Web.Controllers
                 FullName = model.FullName,
                 UserName = model.UserName,
                 Email = model.Email,
-                EmailConfirmed = true,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password!);
 
             if (result.Succeeded)
             {
                 await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id, code },
+                    protocol: Request.Scheme);
+
+                var body = _emailBodyBuilder.GetEmailBody(
+						"https://res.cloudinary.com/salemgomaa/image/upload/v1744808552/envelope-with-approved-letter-opened-envelope-document-with-blue-tick-icon-confirmation-email-vector-illustration_735449-472_o43qfy.avif",
+                        $"Hey {user.FullName}, thanks for joining us!",
+                        "please confirm your email",
+                        $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
+                        "Active Account!"
+                    );
+
+                await _emailSender.SendEmailAsync("salemgomaa01@gmail.com", "thisis me", body);
+                var users = await _userManager.Users.ToListAsync();
+                var usersViewModel = _mapper.Map<IEnumerable<UsersViewModel>>(users);
+                
+
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your email", body);
 
                 var viewModel = _mapper.Map<UsersViewModel>(user);
                 return PartialView("_UserRow", viewModel);
@@ -166,9 +199,10 @@ namespace Bokify.Web.Controllers
                     await _userManager.RemoveFromRolesAsync(user, roles);
                     await _userManager.AddToRolesAsync(user, model.SelectedRoles);
                 }
-                
 
-                var viewModel = _mapper.Map<UsersViewModel>(user);
+				await _userManager.UpdateSecurityStampAsync(user);
+
+				var viewModel = _mapper.Map<UsersViewModel>(user);
                 return PartialView("_UserRow", viewModel);
             }
             return BadRequest(string.Join(',', result.Errors.Select(e => e.Description)));
@@ -207,6 +241,9 @@ namespace Bokify.Web.Controllers
             user.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             await _userManager.UpdateAsync(user);
+
+            if (user.IsDeleted)
+                await _userManager.UpdateSecurityStampAsync(user);
 
             return Ok(user.LastUpdatedOn.ToString());
         }

@@ -139,7 +139,11 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
-                else
+				if (result.IsNotAllowed)
+				{
+					return RedirectToPage("./ResendEmailConfirmation", new { username = Input.Username });
+				}
+				else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                     return Page();

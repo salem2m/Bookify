@@ -12,7 +12,6 @@ namespace Bokify.Web.Seeds
                 UserName = "admin",
                 Email = "admin@bookify.com",
                 FullName = "Admin",
-                EmailConfirmed = true
             };
 
             var user = await userManager.FindByEmailAsync(admin.Email);

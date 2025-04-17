@@ -21,11 +21,12 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
-
-        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+		private readonly IEmailBodyBuilder _emailBodyBuilder;
+		public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _emailBodyBuilder = emailBodyBuilder;
         }
 
         /// <summary>
@@ -71,10 +72,18 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(
+				var body = _emailBodyBuilder.GetEmailBody(
+						"https://res.cloudinary.com/salemgomaa/image/upload/v1744822368/download_d4h3rc.png",
+						$"Hey {user.FullName}",
+						"please click the below button to reset your password",
+						$"{HtmlEncoder.Default.Encode(callbackUrl!)}",
+						"Reset Password"
+					);
+
+				await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
-                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    body);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
