@@ -1,0 +1,213 @@
+﻿@model SubscriberDetailsViewModel
+
+@{
+    ViewData["Title"] = "Subscriber Details";
+}
+
+<div class="d-flex flex-column-fluid">
+    <!--begin::Container-->
+    <div class="d-flex flex-column flex-column-fluid  container-fluid ">
+        <!--begin::Toolbar-->
+        <div class="toolbar mb-5 mb-lg-7" id="kt_toolbar">
+            <!--begin::Page title-->
+            <div class="page-title d-flex flex-column me-3">
+                <!--begin::Title-->
+                <h1 class="d-flex text-gray-900 fw-bold my-1 fs-3">
+                    Member Details
+                </h1>
+            </div>
+            <!--end::Page title-->
+            <!--begin::Actions-->
+            <div class="d-flex align-items-center py-2 py-md-1">
+                <!--begin::Wrapper-->
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary fw-bold">
+                    Edit
+                </a>
+                <!--end::Button-->
+            </div>
+            <!--end::Actions-->
+        </div>
+        <!--end::Toolbar-->
+        <!--begin::Post-->
+        <div class="content flex-column-fluid" id="kt_content">
+            <!--begin::Layout-->
+            <div class="d-flex flex-column flex-xl-row">
+                <!--begin::Sidebar-->
+                <div class="flex-column flex-lg-row-auto w-100 w-xl-350px mb-10">
+
+                    <!--begin::Card-->
+                    <div class="card mb-5 mb-xl-8">
+                        <!--begin::Card body-->
+                        <div class="card-body pt-15">
+                            <!--begin::Summary-->
+                            <div class="d-flex flex-center flex-column mb-5">
+                                <!--begin::Avatar-->
+                                <div class="symbol symbol-150px symbol-circle mb-7">
+                                    <a data-fslightbox href="@Model.ImageUrl">
+                                        <img class="mw-50px mw-lg-75px" src="@Model.ImageThumbnailUrl" alt="@Model.FullName" />
+                                    </a>
+                                </div>
+                                <!--end::Avatar-->
+                                <!--begin::Name-->
+                                <a hr class="fs-3 text-gray-800 text-hover-primary fw-bold mb-1">
+                                    @Model.FullName
+                                </a>
+                                <!--end::Name-->
+                                <!--begin::Email-->
+                                <a class="fs-5 fw-semibold text-muted text-hover-primary mb-6">
+                                    @Model.Email
+                                </a>
+                                <!--end::Email-->
+                            </div>
+                            <!--end::Summary-->
+                            <!--begin::Details toggle-->
+                            <div class="d-flex flex-stack fs-4 py-3">
+                                <div class="fw-bold">
+                                    Details
+                                </div>
+
+                                <!--begin::Badge-->
+                                <div class="badge badge-light-info d-inline">
+                                    <span class="badge badge-light-@(Model.IsBlackListed ? "danger" :  "success") me-auto">
+                                        @(Model.IsBlackListed ? "Blocked" :  "Active Member")
+                                    </span>
+                                </div>
+                                <!--begin::Badge-->
+                            </div>
+                            <!--end::Details toggle-->
+
+                            <div class="separator separator-dashed my-3"></div>
+
+                            <!--begin::Details content-->
+                            <div class="pb-5 fs-6">
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">Account ID</div>
+                                <div class="text-gray-600">ID-@Model.Id</div>
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">National ID</div>
+                                <div class="text-gray-600">@Model.NationalId</div>
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">Birth Date</div>
+                                <div class="text-gray-600"><a class="text-gray-600 text-hover-primary">@Model.DateOfBirth.ToString("MM/dd/yyyy")</a> </div>
+                                <!--begin::Details item-->
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">Address</div>
+                                <div class="text-gray-600">@Model.Address, <br>@Model.Area, <br>@Model.Governorate</div>
+                                <!--begin::Details item-->
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">Email</div>
+                                <div class="text-gray-600"><a href="#" class="text-gray-600 text-hover-primary">@Model.Email</a></div>
+                                <!--begin::Details item-->
+                                <!--begin::Details item-->
+                                <div class="fw-bold mt-5">Phone Number</div>
+                                <div class="text-gray-600">@Model.MobileNumber</div>
+                                <!--begin::Details item-->
+                            </div>
+                            <!--end::Details content-->
+                        </div>
+                        <!--end::Card body-->
+                    </div>
+                    <!--end::Card-->
+                </div>
+                <!--end::Sidebar-->
+                <!--begin::Content-->
+                <div class="flex-lg-row-fluid ms-lg-15">
+                    <!--begin:::Tabs-->
+                    <ul class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-8" role="tablist">
+                        <!--begin:::Tab item-->
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-active-primary pb-4 active" data-bs-toggle="tab" href="#kt_ecommerce_customer_overview" aria-selected="true" role="tab">Overview</a>
+                        </li>
+                        <!--end:::Tab item-->
+                        <!--begin:::Tab item-->
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_customer_general" aria-selected="false" tabindex="-1" role="tab">General Settings</a>
+                        </li>
+                        <!--end:::Tab item-->
+                        <!--begin:::Tab item-->
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link text-active-primary pb-4" data-bs-toggle="tab" href="#kt_ecommerce_customer_advanced" aria-selected="false" tabindex="-1" role="tab">Advanced Settings</a>
+                        </li>
+                        <!--end:::Tab item-->
+                    </ul>
+                    <!--end:::Tabs-->
+                    <!--begin:::Tab content-->
+                    <div class="tab-content" id="myTabContent">
+                        <!--begin:::Tab pane-->
+                        <div class="tab-pane fade show active" id="kt_ecommerce_customer_overview" role="tabpanel">
+                            <div class="row row-cols-1 row-cols-md-2 mb-6 mb-xl-9">
+                                <div class="col">
+                                    <!--begin::Card-->
+                                    <div class="card pt-4 h-md-100 mb-6 mb-md-0">
+                                        <!--begin::Card header-->
+                                        <div class="card-header border-0">
+                                            <!--begin::Card title-->
+                                            <div class="card-title">
+                                                <h2 class="fw-bold">Reward Points</h2>
+                                            </div>
+                                            <!--end::Card title-->
+                                        </div>
+                                        <!--end::Card header-->
+                                        <!--begin::Card body-->
+                                        <div class="card-body pt-0">
+                                            <div class="fw-bold fs-2">
+                                                <div class="d-flex">
+                                                    <i class="ki-duotone ki-heart text-info fs-2x"><span class="path1"></span><span class="path2"></span></i>                <div class="ms-2">
+                                                        4,571 <span class="text-muted fs-4 fw-semibold">Points earned</span>
+                                                    </div>
+                                                </div>
+                                                <div class="fs-7 fw-normal text-muted">Earn reward points with every purchase.</div>
+                                            </div>
+                                        </div>
+                                        <!--end::Card body-->
+                                    </div>
+                                    <!--end::Card-->
+                                </div>
+
+                                <div class="col">
+                                    <!--begin::Reward Tier-->
+                                    <a href="#" class="card bg-@(Model.IsBlackListed ? "danger" :  "success") hoverable h-md-100">
+                                        <!--begin::Body-->
+                                        <div class="card-body">
+                                            <div class="text-white fw-bold fs-2 mt-5">
+                                                @(Model.IsBlackListed ? "Blocked" : "Activ Member")
+                                            </div>
+
+                                            <div class="fw-semibold text-white">
+                                                Subscriber since: @Model.CreatedOn.ToString("dd/MMMM/yyyy")
+                                            </div>
+                                        </div>
+                                        <!--end::Body-->
+                                    </a>
+                                    <!--end::Reward Tier-->
+                                </div>
+                            </div>
+
+
+
+                            <!--begin::Card header-->
+                            <div class="card-header border-0">
+                                <!--begin::Card title-->
+                                <div class="card-title">
+                                    <h2>Transaction History</h2>
+                                </div>
+                                <!--end::Card title-->
+                            </div>
+                            <!--end::Card header-->
+                            <!--begin::Card body-->
+                            <div class="card-body pt-0 pb-5">
+                            </div>
+                            <!--end::Card body-->
+                        </div>
+                        <!--end::Card-->
+                    </div>
+                    <!--end:::Tab pane-->
+                </div>
+                <!--end:::Tab content-->
+            </div>
+            <!--end::Content-->
+        </div>
+        <!--end::Layout-->
+        
+    </div>
+</div>

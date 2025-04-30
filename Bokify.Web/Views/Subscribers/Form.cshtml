@@ -1,0 +1,204 @@
+﻿@model SubscriberFormViewModel
+@{
+    ViewData["Title"] = "Subscriber Form";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">@(Model.Id.Equals(0) ? "Add " : "Edit ")Subscribers</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" asp-controller="Subscribers" enctype="multipart/form-data" id="Form">
+            @if (Model.Id > 0)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
+            <div class="row mb-6">
+                <label class="col-lg-4 col-form-label fw-semibold fs-6" asp-for="Image"></label>
+                <div class="col-lg-8">
+                    <!--begin::Image input-->
+                    <div class="image-input image-input-empty" data-kt-image-input="true" style="background-image: url(@(string.IsNullOrEmpty(Model.ImageUrl) ? "/assets/images/avatar-blank.svg" : Model.ImageThumbnailUrl)">
+                        <!--begin::Image preview wrapper-->
+                        <div class="image-input-wrapper w-100px h-100px"></div>
+                        <!--end::Image preview wrapper-->
+                        <!--begin::Edit button-->
+                        <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                               data-kt-image-input-action="change"
+                               data-bs-dismiss="click">
+                            <i class="bi bi-pencil-fill fs-7"></i>
+
+                            <!--begin::Inputs-->
+                            <input type="file" asp-for="Image" accept=".png, .jpg, .jpeg" />
+                            <input type="hidden" name="avatar_remove" />
+                            <!--end::Inputs-->
+                        </label>
+                        <!--end::Edit button-->
+                        <!--begin::Cancel button-->
+                        <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                              data-kt-image-input-action="cancel"
+                              data-bs-dismiss="click">
+                            <i class="bi bi-x fs-2"></i>
+                        </span>
+                        <!--end::Cancel button-->
+                        <!--begin::Remove button-->
+                        <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                              data-kt-image-input-action="remove"
+                              data-bs-dismiss="click">
+                            <i class="bi bi-x fs-2"></i>
+                        </span>
+                        <!--end::Remove button-->
+                    </div>
+                    <div class="form-text">Allowed file types: png, jpg, jpeg and cannot be more that 2 MB</div>
+                    <span asp-validation-for="Image" class="text-danger d-block"></span>
+                    <!--end::Image input-->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="row">
+
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">Full Name</label>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="First Name" asp-for="FirstName" />
+                                    <label asp-for="FirstName"> </label>
+                                </div>
+                                <span asp-validation-for="FirstName" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="Last Name" asp-for="LastName" />
+                                    <label asp-for="LastName"> </label>
+                                </div>
+                                <span asp-validation-for="LastName" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">Date Of Birth</label>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid js-datepicker" placeholder="Birth Date" asp-for="DateOfBirth" />
+                                    <label asp-for="DateOfBirth"> </label>
+                                </div>
+                                <span asp-validation-for="DateOfBirth" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">National ID</label>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="National ID" asp-for="NationalId" />
+                                    <label asp-for="NationalId"> </label>
+                                </div>
+                                <span asp-validation-for="NationalId" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">Governorate/Area</label>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <select class="form-select form-select-solid js-select2" asp-for="GovernorateId" asp-items="@Model.Governorate" data-placeholder="select a Governorate"><option value="">Select Governorate</option> </select>
+                                    <label asp-for="GovernorateId"> </label>
+                                </div>
+                                <span asp-validation-for="GovernorateId" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <select class="form-select form-select-solid js-select2" asp-for="AreaId" asp-items="@Model.Areas" data-placeholder="select an Area"><option value="">Select Area</option> </select>
+                                    <label asp-for="AreaId"> </label>
+                                </div>
+                                <span asp-validation-for="AreaId" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">Address</label>
+                        <div class="col">
+
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="Address" asp-for="Address" />
+                                    <label asp-for="Address"> </label>
+                                </div>
+                                <span asp-validation-for="Address" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row">
+
+                        <label class="col-lg-4 col-form-label required fw-semibold fs-6">Contacts</label>
+                        
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="Phone Numer" asp-for="MobileNumber" />
+                                    <label asp-for="MobileNumber"> </label>
+                                </div>
+                                <span asp-validation-for="MobileNumber" class="text-danger d-block"></span>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" asp-for="HasWhattsApp" />
+                                <label class="form-check-label" asp-for="HasWhattsApp"> </label>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="mb-5">
+                                <div class="form-floating mb-2">
+                                    <input type="text" class="form-control form-control-solid" placeholder="Email" asp-for="Email" />
+                                    <label asp-for="Email"> </label>
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger d-block"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer ms-2">
+        <button type="submit" class="btn btn-primary" form="Form">
+            <span class="indicator-label">Save</span>
+            <span class="indicator-progress">
+                Please wait...<span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+        </button>
+        <a class="btn btn-light text-primary ms-3" asp-action="Index">Cancel</a>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/subscriber-form.js" asp-append-version="true"></script>
+}

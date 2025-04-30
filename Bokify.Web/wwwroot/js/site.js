@@ -191,6 +191,8 @@ $(document).ready(function () {
     //datepicker
     $('.js-datepicker').daterangepicker({
 
+        //changeYear: true,
+        //yearRange : "1:2100",
         singleDatePicker: true,
         autoApply: true,
         drops: 'up',

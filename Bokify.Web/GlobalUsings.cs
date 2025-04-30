@@ -7,7 +7,6 @@ global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
 global using Bokify.Web.Core.Models;
 global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Web.Mvc;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Mvc.Rendering;
 global using Microsoft.AspNetCore.Mvc.ViewFeatures;

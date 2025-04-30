@@ -1,31 +1,33 @@
 ﻿using Bokify.Web.Core.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+
 namespace Bokify.Web.Services
 {
 	public class ImageService : IImageService
 	{
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		private List<string> _allowedExtentions = new() { ".jpg", ".png", ".jpeg" };
+		private List<string> _allowedExtensions = new() { ".jpg", ".jpeg", ".png" };
 		private int _maxAllowedSize = 2097152;
 
 		public ImageService(IWebHostEnvironment webHostEnvironment)
 		{
 			_webHostEnvironment = webHostEnvironment;
 		}
+
 		public async Task<(bool isUploaded, string? errorMessage)> UploadAsync(IFormFile image, string imageName, string folderPath, bool hasThumbnail)
 		{
 			var extension = Path.GetExtension(image.FileName);
-			if (!_allowedExtentions.Contains(extension))
-				return (isUploaded : false, errorMessage : Errors.NotAllowedExtensions);
+
+			if (!_allowedExtensions.Contains(extension))
+				return (isUploaded: false, errorMessage: Errors.NotAllowedExtensions);
 
 			if (image.Length > _maxAllowedSize)
 				return (isUploaded: false, errorMessage: Errors.MaxSize);
 
-			
 			var path = Path.Combine($"{_webHostEnvironment.WebRootPath}{folderPath}", imageName);
 
-			var stream = File.Create(path);
+			using var stream = File.Create(path);
 			await image.CopyToAsync(stream);
 			stream.Dispose();
 
@@ -43,18 +45,21 @@ namespace Bokify.Web.Services
 			return (isUploaded: true, errorMessage: null);
 		}
 
-		public void Delete(string imagePath, string? imageThmbnailPath = null)
+		public void Delete(string imagePath, string? imageThumbnailPath = null)
 		{
 			var oldImagePath = $"{_webHostEnvironment.WebRootPath}{imagePath}";
 
 			if (File.Exists(oldImagePath))
 				File.Delete(oldImagePath);
-			if (!string.IsNullOrEmpty(imageThmbnailPath))
+
+			if (!string.IsNullOrEmpty(imageThumbnailPath))
 			{
-				var oldThumbPath = $"{_webHostEnvironment.WebRootPath}{imageThmbnailPath}";
+				var oldThumbPath = $"{_webHostEnvironment.WebRootPath}{imageThumbnailPath}";
+
 				if (File.Exists(oldThumbPath))
 					File.Delete(oldThumbPath);
 			}
 		}
+
 	}
 }
