@@ -1,8 +1,4 @@
-﻿using Bokify.Web.Core.Models;
-using Bokify.Web.Core.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+﻿using Microsoft.AspNetCore.DataProtection;
 using System.Security.Claims;
 
 namespace Bokify.Web.Controllers
@@ -12,14 +8,16 @@ namespace Bokify.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IDataProtector _dataProtector;
         private readonly IImageService _imageService;
 
-        public SubscribersController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment, IImageService imageService)
+        public SubscribersController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment, IImageService imageService, IDataProtectionProvider dataProtector)
         {
             _context = context;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _imageService = imageService;
+            _dataProtector = dataProtector.CreateProtector("SecureKey");
         }
 
         public IActionResult Index()
@@ -27,17 +25,37 @@ namespace Bokify.Web.Controllers
             return View();
         }
 
-        public IActionResult Details(int id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Search(SearchFormViewModel model)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var subscriber = _context.Subscribers.SingleOrDefault(e => e.Email == model.Value || e.NationalId == model.Value || e.MobileNumber == model.Value);
+
+            var viewModel = _mapper.Map<SubscriberSearchFormViewModel>(subscriber);
+
+            if (subscriber is not null)
+                viewModel.Key = _dataProtector.Protect(subscriber.Id.ToString());
+
+            return PartialView("_Result", viewModel);
+        }
+
+        public IActionResult Details(string id)
+        {
+            var subscriberId = int.Parse(_dataProtector.Unprotect(id));
+
             var subscriber = _context.Subscribers
                 .Include(g=>g.Governorate)
                 .Include(a=>a.Area)
-                .SingleOrDefault(s=>s.Id == id);
+                .SingleOrDefault(s=>s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
 
             var viewModel = _mapper.Map<SubscriberDetailsViewModel>(subscriber);
+            viewModel.Key = id;
 
             return View(viewModel);
         }
@@ -54,7 +72,7 @@ namespace Bokify.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Form", PopulateViewModel(model));
 
-            var Subscriber = _mapper.Map<Subscriber>(model);
+            var subscriber = _mapper.Map<Subscriber>(model);
 
             var imageName = $"{Guid.NewGuid()}{Path.GetExtension(model.Image!.FileName)}";
             var imagePath = "/images/Subscribers";
@@ -67,25 +85,32 @@ namespace Bokify.Web.Controllers
                 return View("Form", PopulateViewModel(model));
             }
 
-            Subscriber.ImageUrl = $"{imagePath}/{imageName}";
-            Subscriber.ImageThumbnailUrl = $"{imagePath}/thumb/{imageName}";
-            Subscriber.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            subscriber.ImageUrl = $"{imagePath}/{imageName}";
+            subscriber.ImageThumbnailUrl = $"{imagePath}/thumb/{imageName}";
+            subscriber.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
-            _context.Add(Subscriber);
+            _context.Add(subscriber);
             _context.SaveChanges();
+
+            var subscriberId = _dataProtector.Protect(subscriber.Id.ToString());
 
             //TODO: Send welcome email
 
-            return RedirectToAction(nameof(Details), new { id = Subscriber.Id });
+            return RedirectToAction(nameof(Details), new { id = subscriberId });
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Edit(string id)
         {
-            var subscriber = _context.Subscribers.SingleOrDefault(x => x.Id == id);
+            var subscriberId = int.Parse(_dataProtector.Unprotect(id));
+
+            var subscriber = _context.Subscribers.Find(subscriberId);
             if(subscriber is null)
                 return NotFound();
 
-            return View("Form", PopulateViewModel(_mapper.Map<SubscriberFormViewModel>(subscriber)));
+            var viewModel = _mapper.Map<SubscriberFormViewModel>(subscriber);
+            viewModel.Key = id;
+
+            return View("Form", PopulateViewModel(viewModel));
         }
 
         [HttpPost]
@@ -95,7 +120,9 @@ namespace Bokify.Web.Controllers
             if (!ModelState.IsValid)
                 return View("Form", PopulateViewModel(model));
 
-            var subscriber = _context.Subscribers.SingleOrDefault(x => x.Id == model.Id);
+            var subscriberId = int.Parse(_dataProtector.Unprotect(model.Key!));
+
+            var subscriber = _context.Subscribers.Find(subscriberId);
             if (subscriber is null)
                 return NotFound();
 
@@ -131,41 +158,39 @@ namespace Bokify.Web.Controllers
 
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index), new {id = subscriber.Id});
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Search(SearchFormViewModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var subscriber = _context.Subscribers.SingleOrDefault(e => e.Email == model.Value || e.NationalId == model.Value || e.MobileNumber == model.Value);
-
-            var viewModel = _mapper.Map<SubscriberSearchFormViewModel>(subscriber);
-
-            return PartialView("_Result", viewModel);
+            return RedirectToAction(nameof(Details), new { id = model.Key });
         }
 
         public IActionResult AllowEmail(SubscriberFormViewModel model)
         {
+            var subscriberId = 0;
+            if(!string.IsNullOrEmpty(model.Key))
+                subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
+
             var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.Email == model.Email);
-            var isAllowed = subscriber is null || subscriber.Id.Equals(model.Id);
+            var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);
         }
         public IActionResult AllowNationalId(SubscriberFormViewModel model)
         {
+            var subscriberId = 0;
+            if (!string.IsNullOrEmpty(model.Key))
+                subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
+
             var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.NationalId == model.NationalId);
-            var isAllowed = subscriber is null || subscriber.Id.Equals(model.Id);
+            var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);
         }
         public IActionResult AllowMobileNumber(SubscriberFormViewModel model)
         {
+            var subscriberId = 0;
+            if (!string.IsNullOrEmpty(model.Key))
+                subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
+
             var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.MobileNumber == model.MobileNumber);
-            var isAllowed = subscriber is null || subscriber.Id.Equals(model.Id);
+            var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);
         }

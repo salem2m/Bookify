@@ -3,6 +3,7 @@
     public class SubscriberDetailsViewModel
     {
         public int Id { get; set; }
+        public string? Key { get; set; }
         public string FullName { get; set; } = null!;
         public DateTime DateOfBirth { get; set; } = DateTime.Now;
         public string NationalId { get; set; } = null!;

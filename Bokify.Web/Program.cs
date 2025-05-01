@@ -2,6 +2,7 @@ using Bokify.Web.Core.Mapping;
 using Bokify.Web.Helpers;
 using Bokify.Web.Seeds;
 using Bokify.Web.Settings;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
@@ -33,6 +34,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     //options.Password.RequiredUniqueChars = 1;
     options.User.RequireUniqueEmail = true;
 });
+
+builder.Services.AddDataProtection().SetApplicationName(nameof(Bokify));
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
