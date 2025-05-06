@@ -128,12 +128,17 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
 
+                var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/v1744902879/images_xeiql4.png"},
+                    {"header", $"Hey {user.FullName}"},
+                    {"body", "please click the below button to reset Email"},
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"},
+                    {"linkTitle", "Reset Email"}
+                };
+
                 var body = _emailBodyBuilder.GetEmailBody(
-                        "https://res.cloudinary.com/salemgomaa/image/upload/v1744902879/images_xeiql4.png",
-                        $"Hey {user.FullName}",
-                        "please click the below button to reset Email",
-                        $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                        "Reset Email"
+                       EmailTemplates.Email, placeholders
                     );
 
                 await _emailSender.SendEmailAsync(
@@ -173,12 +178,17 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
 
+            var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/v1744808552/envelope-with-approved-letter-opened-envelope-document-with-blue-tick-icon-confirmation-email-vector-illustration_735449-472_o43qfy.avif"},
+                    {"header", $"Hey {user.FullName}"},
+                    {"body", "please click the below button to Confirm Email"},
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"},
+                    {"linkTitle", "Confirm Email"}
+                };
+
             var body = _emailBodyBuilder.GetEmailBody(
-                        "https://res.cloudinary.com/salemgomaa/image/upload/v1744808552/envelope-with-approved-letter-opened-envelope-document-with-blue-tick-icon-confirmation-email-vector-illustration_735449-472_o43qfy.avif",
-                        $"Hey {user.FullName}",
-                        "please click the below button to Confirm Email",
-                        $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                        "Confirm Email"
+                        EmailTemplates.Email, placeholders
                     );
 
             await _emailSender.SendEmailAsync(

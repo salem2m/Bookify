@@ -72,13 +72,17 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
 
+                var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/v1744822368/download_d4h3rc.png"},
+                    {"header", $"Hey {user.FullName}"},
+                    {"body", "please click the below button to reset your password"},
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"},
+                    {"linkTitle", "Reset Password"}
+                };
+
 				var body = _emailBodyBuilder.GetEmailBody(
-						"https://res.cloudinary.com/salemgomaa/image/upload/v1744822368/download_d4h3rc.png",
-						$"Hey {user.FullName}",
-						"please click the below button to reset your password",
-						$"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-						"Reset Password"
-					);
+						EmailTemplates.Email, placeholders);
 
 				await _emailSender.SendEmailAsync(
                     Input.Email,

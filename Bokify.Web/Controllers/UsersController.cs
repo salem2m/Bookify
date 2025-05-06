@@ -81,12 +81,17 @@ namespace Bokify.Web.Controllers
                     values: new { area = "Identity", userId = user.Id, code },
                     protocol: Request.Scheme);
 
+                var placeholders = new Dictionary<string, string>()
+                {
+                    {"imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/v1744808552/envelope-with-approved-letter-opened-envelope-document-with-blue-tick-icon-confirmation-email-vector-illustration_735449-472_o43qfy.avif"},
+                    {"header", $"Hey {user.FullName}  thanks for joining us!"},
+                    {"body", "please confirm your email"},
+                    {"url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"},
+                    {"linkTitle", "Active Account!"}
+                };
+
                 var body = _emailBodyBuilder.GetEmailBody(
-						"https://res.cloudinary.com/salemgomaa/image/upload/v1744808552/envelope-with-approved-letter-opened-envelope-document-with-blue-tick-icon-confirmation-email-vector-illustration_735449-472_o43qfy.avif",
-                        $"Hey {user.FullName}, thanks for joining us!",
-                        "please confirm your email",
-                        $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                        "Active Account!"
+					  EmailTemplates.Email, placeholders
                     );
 
                 await _emailSender.SendEmailAsync("salemgomaa01@gmail.com", "thisis me", body);
