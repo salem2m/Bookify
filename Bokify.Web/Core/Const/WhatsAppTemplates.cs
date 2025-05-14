@@ -3,5 +3,6 @@
     public static class WhatsAppTemplates
     {
         public const string WelcomMessage = "welcom_message";
+        public const string SubscriptionRenew = "subscription_renew";
     }
 }
