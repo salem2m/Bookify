@@ -4,5 +4,6 @@
     {
         public const string WelcomMessage = "welcom_message";
         public const string SubscriptionRenew = "subscription_renew";
+        public const string SubscriptionExpiration = "subscription_expiration";
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using Hangfire;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
@@ -123,9 +124,8 @@ namespace Bokify.Web.Controllers
 
             var body = _emailBodyBuilder.GetEmailBody(EmailTemplates.Notification, placeholders);
 
-            await _emailSender.SendEmailAsync(
-                model.Email,
-                "Welcome to Bookify", body);
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(model.Email,
+                "Welcome to Bookify", body));
 
             //Send welcome message using WhatsApp
             if (model.HasWhattsApp)
@@ -144,8 +144,8 @@ namespace Bokify.Web.Controllers
 
                 var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01286582478" : model.MobileNumber;
 
-                await _whatsAppClient
-                    .SendMessage($"2{mobileNumber}", WhatsAppLanguageCode.English, WhatsAppTemplates.WelcomMessage, components);
+                BackgroundJob.Enqueue(() =>_whatsAppClient
+                    .SendMessage($"2{mobileNumber}", WhatsAppLanguageCode.English, WhatsAppTemplates.WelcomMessage, components));
             }
 
             var subscriberId = _dataProtector.Protect(subscriber.Id.ToString());
@@ -216,7 +216,7 @@ namespace Bokify.Web.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RenewSubscription(string sKey)
+        public IActionResult RenewSubscription(string sKey)
         {
             var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
 
@@ -251,16 +251,16 @@ namespace Bokify.Web.Controllers
             //Send email and WhatsApp Message
             var placeholders = new Dictionary<string, string>()
             {
-                { "imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/v1747235868/Renew_at9wmj.jpg" },
+                { "imageUrl", "https://res.cloudinary.com/salemgomaa/image/upload/c_thumb,w_200,g_face/v1747235868/Renew_at9wmj.jpg" },
                 { "header", $"Hello {subscriber.FirstName}," },
                 { "body", $"your subscription has been renewed through {newSubscription.EndDate.ToString("d MMM, yyyy")} 🎉🎉" }
             };
 
             var body = _emailBodyBuilder.GetEmailBody(EmailTemplates.Notification, placeholders);
 
-            await _emailSender.SendEmailAsync(
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(
                 subscriber.Email,
-                "Bookify Subscription Renewal", body);
+                "Bookify Subscription Renewal", body));
 
             if (subscriber.HasWhattsApp)
             {
@@ -280,9 +280,9 @@ namespace Bokify.Web.Controllers
                 var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01286582478" : subscriber.MobileNumber;
 
                 //Change 2 with your country code
-                await _whatsAppClient
+                BackgroundJob.Enqueue(() => _whatsAppClient
                     .SendMessage($"2{mobileNumber}", WhatsAppLanguageCode.English,
-                    WhatsAppTemplates.SubscriptionRenew, components);
+                    WhatsAppTemplates.SubscriptionRenew, components));
             }
 
             var viewModel = _mapper.Map<SubscriptionViewModel>(newSubscription);
