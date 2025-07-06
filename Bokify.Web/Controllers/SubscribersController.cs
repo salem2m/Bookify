@@ -61,12 +61,14 @@ namespace Bokify.Web.Controllers
                 .Include(g=>g.Governorate)
                 .Include(a=>a.Area)
                 .Include(a=>a.Subscriptions)
+                .Include(r=>r.Rentals)
+                .ThenInclude(c=>c.RentalCopies)
                 .SingleOrDefault(s=>s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
 
-            var viewModel = _mapper.Map<SubscriberDetailsViewModel>(subscriber);
+            var viewModel = _mapper.Map<SubscriberViewModel>(subscriber);
             viewModel.Key = id;
 
             return View(viewModel);

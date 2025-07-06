@@ -14,6 +14,8 @@ namespace Bokify.Web.Data
         public DbSet<BookCategory> BookCategries { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<RentalCopy> RentalCopies { get; set; }
         public DbSet<Governorate> Governorates { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
@@ -35,6 +37,12 @@ namespace Bokify.Web.Data
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
 
             builder.Entity<BookCategory>().HasKey(e=> new {e.CategoryId, e.BookId});
+
+            builder.Entity<RentalCopy>().HasKey(e=> new { e.RentalId, e.BookCopyId});
+
+            builder.Entity<Rental>().HasQueryFilter(e=> !e.IsDeleted );
+            builder.Entity<RentalCopy>().HasQueryFilter(e => !e.Rental!.IsDeleted);
+
             base.OnModelCreating(builder);
         }
     }

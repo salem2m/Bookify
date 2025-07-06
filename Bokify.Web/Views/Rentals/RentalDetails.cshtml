@@ -1,0 +1,83 @@
+﻿@model RentalViewModel
+
+@{
+    ViewData["Title"] = "Rental Details";
+}
+
+<div class="alert bg-light-primary border border-primary border-3 border-dashed d-flex justify-content-between w-100 p-5 mb-10">
+    <div class="d-flex align-items-center">
+        <div class="symbol symbol-40px me-4">
+            <div class="symbol-label fs-2 fw-semibold text-success">
+                <!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
+                <span class="svg-icon svg-icon-2 svg-icon-primary">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path opacity="0.3" d="M20 15H4C2.9 15 2 14.1 2 13V7C2 6.4 2.4 6 3 6H21C21.6 6 22 6.4 22 7V13C22 14.1 21.1 15 20 15ZM13 12H11C10.5 12 10 12.4 10 13V16C10 16.5 10.4 17 11 17H13C13.6 17 14 16.6 14 16V13C14 12.4 13.6 12 13 12Z" fill="currentColor" />
+                        <path d="M14 6V5H10V6H8V5C8 3.9 8.9 3 10 3H14C15.1 3 16 3.9 16 5V6H14ZM20 15H14V16C14 16.6 13.5 17 13 17H11C10.5 17 10 16.6 10 16V15H4C3.6 15 3.3 14.9 3 14.7V18C3 19.1 3.9 20 5 20H19C20.1 20 21 19.1 21 18V14.7C20.7 14.9 20.4 15 20 15Z" fill="currentColor" />
+                    </svg>
+                </span>
+                <!--end::Svg Icon-->
+            </div>
+        </div>
+        <!--begin::Content-->
+        <div class="d-flex flex-column pe-0 pe-sm-10">
+            <h5 class="mb-1">Rental Details</h5>
+        </div>
+        <!--end::Content-->
+    </div>
+    @if (Model.CreatedOn.Date == DateTime.Today)
+    {
+        <div>
+            <a class="btn btn-sm btn-primary" asp-action="Edit" asp-route-id="@Model.Id">
+                <i class="bi bi-plus-square-dotted"></i>
+                Edit
+            </a>
+        </div>
+    }else if (!Model.RentalCopies.Any(c => c.ReturnDate.HasValue))
+    {
+        <a class="btn btn-sm btn-primary" asp-action="Return" asp-route-id="@Model.Id">
+            Return
+        </a>
+    }
+</div>
+
+<div class="row">
+    @foreach (var copy in Model.RentalCopies)
+    {
+        <div class="col-sm-4 col-xxl-3">
+            <!--begin::Body-->
+            <div class="card card-flush h-xl-100">
+                <!--begin::Row-->
+                <div class="card-body text-center pb-5">
+                    <!--begin::Col-->
+                    <div class="d-block overlay">
+                        <a class="text-gray-800 text-hover-primary fs-1 fw-bold mt-0">@copy.BookCopy!.BookTitle</a>
+                        <span class="text-gray-500 fs-7 fw-bold me-2 d-block lh-1 pb-1">Serial Number: @copy.BookCopy!.SerialNumber</span>
+                        <div class="d-block h-50">
+
+                            <!--begin::Image-->
+                            <img class="bgi-no-repeat h-100 align-self-center mt-3 mb-3" src="@copy.BookCopy!.ImageThumbnailUrl">
+                            <!--end::Image-->
+                        </div>
+
+                        <div class="d-flex flex-column align-center border border-1 border-gray-300 text-center pt-1 pb-3 mb-1 card-rounded ">
+                            <span class="fw-semibold text-gray-600 fs-7 pb-1">Rentaled in</span>
+                            <span class="fw-bold text-gray-800 fs-3">@copy.RentalDate.ToString("MMM dd, yyyy")</span>
+                            <span class="fw-semibold text-gray-600 fs-7 pb-1">Ending in</span>
+                            <span class="fw-bold text-gray-800 fs-3">@copy.EndDate.ToString("MMM dd, yyyy")</span>
+                            <span class="fw-semibold text-gray-600 fs-7 pb-1">Rturned in</span>
+                            <span class="fw-bold text-gray-800 fs-3">@(copy.ReturnDate.HasValue ? copy.ReturnDate?.ToString("MMM dd, yyyy") : '-') </span>
+                            <span class="fw-semibold text-gray-600 fs-7 pb-1">Delay in days</span>
+                            <span class="fw-bold text-@(copy.DelayInDays > 0 ? "danger" : "gray-600") fs-4 pb-1">(@copy.DelayInDays)Days</span>
+                        </div>
+
+
+                    </div>
+                    <!--end::Col-->
+                </div>
+                <!--end::Row-->
+            </div>
+            <!--end::Body-->
+        </div>
+    }
+
+</div>

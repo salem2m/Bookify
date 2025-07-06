@@ -3,12 +3,12 @@ var datatable;
 var updatedRow;
 var exportedCols = [];
 
-function disableSubmitButton() {
-    $('body :submit').attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
+function disableSubmitButton(btn) {
+    $(btn).attr('disabled', 'disabled').attr('data-kt-indicator', 'on');
 }
 
 function onModalBegin() {
-    disableSubmitButton();
+    disableSubmitButton($('#Modal').find(':submit'));
 }
 function showSuccessMessage(message = 'Saved successfully') {
     Swal.fire({
@@ -174,7 +174,7 @@ $(document).ready(function () {
         }
 
         var isValid = $(this).valid();
-        if (isValid) disableSubmitButton();
+        if (isValid) disableSubmitButton($(this).find(':submit'));
     });
 
     //TinyMCE

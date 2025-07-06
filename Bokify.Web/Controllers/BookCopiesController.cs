@@ -1,6 +1,4 @@
-﻿using Bokify.Web.Filters;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace Bokify.Web.Controllers
 {
@@ -116,6 +114,20 @@ namespace Bokify.Web.Controllers
             _context.SaveChanges();
 
             return Ok();
+        }
+
+        public IActionResult History(int id)
+        {
+            var copyHistory = _context.RentalCopies
+                .Include(c => c.Rental)
+                .ThenInclude(r => r!.Subscriber)
+                .Where(c => c.BookCopyId == id)
+                .OrderByDescending(c => c.RentalDate)
+                .ToList();
+
+            var viewModel = _mapper.Map<IEnumerable<CopyHistoryViewModel>>(copyHistory);
+
+            return View(viewModel);
         }
     }
 }

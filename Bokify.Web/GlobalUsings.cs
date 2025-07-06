@@ -2,6 +2,7 @@
 global using Bokify.Web.Data;
 global using Bokify.Web.Core.ViewModels;
 global using Bokify.Web.Core.Const;
+global using Bokify.Web.Core.Enums;
 global using Bokify.Web.Services;
 global using Microsoft.EntityFrameworkCore;
 global using AutoMapper;
