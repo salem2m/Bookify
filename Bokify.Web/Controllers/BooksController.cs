@@ -92,9 +92,9 @@ namespace Bokify.Web.Controllers
             if(book is null)
                 return NotFound();
 
-            var bviwemodel=_mapper.Map<BookViewModel>(book);
+            var viewModel = _mapper.Map<BookViewModel>(book);
 
-            return View(bviwemodel);
+            return View(viewModel);
         }
 
         public IActionResult Create ()

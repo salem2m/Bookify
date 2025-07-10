@@ -4,6 +4,7 @@ namespace Bokify.Web.Core.ViewModels
 {
     public class BookViewModel
     {
+        public string? b { get; set; }
         public int Id { get; set; }
         public string Title { get; set; } = null!;
         public string Author { get; set; } = null!;

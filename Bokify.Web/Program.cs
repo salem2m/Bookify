@@ -7,10 +7,12 @@ using Bokify.Web.Settings;
 using Bokify.Web.Tasks;
 using Hangfire;
 using Hangfire.Dashboard;
+using HashidsNet;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
+using System.Security.Claims;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using WhatsAppCloudApi.Extensions;
 using WhatsAppCloudApi.Services;
@@ -43,6 +45,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 
 builder.Services.AddDataProtection().SetApplicationName(nameof(Bokify));
+
+builder.Services.AddSingleton<IHashids>(_ => new Hashids(minHashLength:11));
 
 builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 

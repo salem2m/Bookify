@@ -2,6 +2,7 @@
 
 namespace Bokify.Web.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         readonly ApplicationDbContext _context;
