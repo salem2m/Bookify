@@ -162,7 +162,7 @@ var KTDatatables = function () {
 $(document).ready(function () {
 
     //Disable submit button
-    $('form').not('#SignOut').on('submit', function () {
+    $('form').not('#SignOut').not('.js-excluded-validation').on('submit', function () {
         if ($('.js-tinymce').length > 0) {
             //to validate the description part
             $('.js-tinymce').each(function () {
@@ -191,7 +191,7 @@ $(document).ready(function () {
     //datepicker
     $('.js-datepicker').daterangepicker({
 
-        //changeYear: true,
+        changeYear: true,
         //yearRange : "1:2100",
         singleDatePicker: true,
         autoApply: true,

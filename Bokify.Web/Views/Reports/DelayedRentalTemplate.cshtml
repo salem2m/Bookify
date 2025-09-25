@@ -1,0 +1,37 @@
+﻿@model IEnumerable<RentalCopyViewModel>
+@{
+    Layout = "_ReportsLayout";
+}
+
+<table id="data">
+    <thead>
+        <tr class="fw-bold bg-black fs-6 text-white">
+            <th class="ps-3">Subscriber Id</th>
+            <th>Subscriber Name</th>
+            <th>Subscriber Phone</th>
+            <th>Book Title</th>
+            <th>Book Serial</th>
+            <th>Rental Date</th>
+            <th>End Date</th>
+            <th>Extended On</th>
+            <th>Delayed in Days</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rental in Model)
+        {
+            <tr>
+                <td>@rental.Rental!.Subscriber!.Id</td>
+                <td>@rental.Rental!.Subscriber!.FullName</td>
+                <td>@rental.Rental!.Subscriber.MobileNumber</td>
+                <td>@rental.BookCopy!.BookTitle</td>
+                <td>@rental.BookCopy.SerialNumber</td>
+                <td>@rental.RentalDate.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.EndDate.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.ExtendedOn?.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.DelayInDays</td>
+            </tr>
+
+        }
+    </tbody>
+</table>

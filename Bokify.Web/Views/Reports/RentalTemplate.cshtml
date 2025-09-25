@@ -1,0 +1,37 @@
+﻿@model IEnumerable<RentalCopy>
+@{
+    Layout = "_ReportsLayout";
+}
+
+<table id="data">
+    <thead>
+        <tr class="fw-bold bg-black fs-6 text-white">
+            <th class="ps-3">Subscriber Id</th>
+            <th>Subscriber Name</th>
+            <th>Subscriber Phone</th>
+            <th>Book Title</th>
+            <th>Book Author</th>
+            <th>Rental Date</th>
+            <th>End Date</th>
+            <th>Return Date</th>
+            <th>Extended On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var rental in Model)
+        {
+            <tr>
+                <td>@rental.Rental!.SubscriberId</td>
+                <td>@(rental.Rental!.Subscriber!.FirstName + " " + rental.Rental!.Subscriber.LastName)</td>
+                <td>@rental.Rental!.Subscriber.MobileNumber</td>
+                <td>@rental.BookCopy!.Book!.Title</td>
+                <td>@rental.BookCopy.Book.Author!.Name</td>
+                <td>@rental.RentalDate.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.EndDate.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.ReturnDate?.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+                <td>@rental.ExtendedeOn?.ToString("d MMM yyyy", new CultureInfo("en-US"))</td>
+            </tr>
+
+        }
+    </tbody>
+</table>

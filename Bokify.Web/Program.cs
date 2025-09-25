@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
 using System.Security.Claims;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
+using ViewToHTML.Extensions;
 using WhatsAppCloudApi.Extensions;
 using WhatsAppCloudApi.Services;
 
@@ -73,6 +74,8 @@ options.AddPolicy("AdminsOnly", policy =>
     policy.RequireAuthenticatedUser();
     policy.RequireRole(AppRoles.Admin);
 }));
+
+builder.Services.AddViewToHTML();
 
 var app = builder.Build();
 
