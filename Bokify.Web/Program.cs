@@ -11,6 +11,7 @@ using HashidsNet;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Serilog;
 using System.Reflection;
 using System.Security.Claims;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
@@ -77,8 +78,12 @@ options.AddPolicy("AdminsOnly", policy =>
 
 builder.Services.AddViewToHTML();
 
-var app = builder.Build();
+//Add Serilog
+Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+builder.Host.UseSerilog();
 
+var app = builder.Build();
+app.UseExceptionHandler("/Home/Error");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -86,10 +91,12 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
