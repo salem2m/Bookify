@@ -1,15 +1,7 @@
-﻿using Bokify.Web.Core.Models;
-using Bokify.Web.Extensions;
+﻿using Bokify.Web.Extensions;
 using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using OpenHtmlToPdf;
 using ViewToHTML.Services;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Bokify.Web.Controllers
 {

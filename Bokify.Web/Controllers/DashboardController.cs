@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
     [Authorize]
     public class DashboardController : Controller
@@ -16,8 +14,6 @@ namespace Bokify.Web.Controllers
 
         public IActionResult Index()
         {
-            throw new Exception("myexcption");
-
             var books = _context.BookCopies.Where(b=>!b.IsDeleted).Count();
             var numberOfSubscribers = _context.Subscribers.Where(b=>!b.IsDeleted).Count();
             var numberOfBooks = books <= 10 ? books : books /10 * 10;

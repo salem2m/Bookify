@@ -1,8 +1,5 @@
 ﻿using Hangfire;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
-using System.Security.Claims;
 using WhatsAppCloudApi;
 using WhatsAppCloudApi.Services;
 
@@ -37,7 +34,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Search(SearchFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -80,7 +76,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SubscriberFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -170,7 +165,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(SubscriberFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -217,7 +211,6 @@ namespace Bokify.Web.Controllers
             return RedirectToAction(nameof(Details), new { id = model.Key });
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult RenewSubscription(string sKey)
         {
             var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));

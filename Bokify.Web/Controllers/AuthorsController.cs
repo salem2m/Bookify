@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Bokify.Web.Filters;
-using Bokify.Web.Core.Models;
-using Bokify.Web.Core.ViewModels;
-using System.Security.Claims;
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
     public class AuthorsController : Controller
     {
@@ -15,6 +10,7 @@ namespace Bokify.Web.Controllers
             _context = context;
             _mapper = mapper;
         }
+
         [HttpGet]
         public IActionResult Index()
         {
@@ -23,14 +19,15 @@ namespace Bokify.Web.Controllers
 
             return View(viewmodel);
         }
+
         [HttpGet]
         [Filters.AjaxOnly]
         public IActionResult Create()
         {
             return PartialView("_Form");
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
+        [HttpPost] 
         public IActionResult Create(AuthorFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -58,8 +55,8 @@ namespace Bokify.Web.Controllers
 
             return PartialView("_Form", ViewModel);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
+        [HttpPost]      
         public IActionResult Edit(AuthorFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -77,8 +74,8 @@ namespace Bokify.Web.Controllers
 
             return PartialView("_AuthorRow", viewmodel);
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+
+        [HttpPost]  
         public IActionResult ChangeStatus(int id)
         {
 

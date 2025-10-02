@@ -1,14 +1,6 @@
 ﻿using Bokify.Web.Settings;
 using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
-using static System.Net.Mime.MediaTypeNames;
-using System.IO;
-using Image = SixLabors.ImageSharp.Image;
-using Bokify.Web.Filters;
-using System.Linq.Dynamic.Core;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Bokify.Web.Controllers
 {
@@ -47,7 +39,8 @@ namespace Bokify.Web.Controllers
         {
             return View();
         }
-        [HttpPost]
+
+        [HttpPost, IgnoreAntiforgeryToken]
         public IActionResult GetBooks()
         {
             var skip = int.Parse(Request.Form["start"]!);
@@ -104,7 +97,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BookFormViewModel model)
         {
             if(!ModelState.IsValid)
@@ -166,8 +158,8 @@ namespace Bokify.Web.Controllers
 
             return View("Form", viewmodel);
         }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BookFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -241,7 +233,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult ChangeStatus(int id)
         {
 

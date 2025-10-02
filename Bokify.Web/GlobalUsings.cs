@@ -16,3 +16,7 @@ global using Microsoft.AspNetCore.Razor.TagHelpers;
 global using Microsoft.AspNetCore.Authorization;
 global using UoN.ExpressiveAnnotations.NetCore.Attributes;
 global using System.Globalization;
+global using System.Security.Claims;
+global using Microsoft.AspNetCore.DataProtection;
+global using System.Linq.Dynamic.Core;
+global using HashidsNet;

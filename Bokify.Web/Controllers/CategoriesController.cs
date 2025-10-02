@@ -1,7 +1,4 @@
-﻿using Bokify.Web.Core.Consts;
-using System.Security.Claims;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
     
     public class CategoriesController : Controller
@@ -14,8 +11,8 @@ namespace Bokify.Web.Controllers
             _context = context;
             _mapper = mapper;
         }
-        [HttpGet]
-        
+
+        [HttpGet] 
 		public IActionResult Index()
 		{
 			var categories = _context.Categories.ToList();
@@ -28,8 +25,8 @@ namespace Bokify.Web.Controllers
 		{
 			return View("Form");
 		}
-		[HttpPost]
-		[ValidateAntiForgeryToken]
+
+		[HttpPost]		
 		public IActionResult Create(CategoryFormViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -48,6 +45,7 @@ namespace Bokify.Web.Controllers
 
             return RedirectToAction(nameof(Index), viewmodel);
 		}
+
 		[HttpGet]
 		public IActionResult Edit(int id)
 		{
@@ -60,8 +58,7 @@ namespace Bokify.Web.Controllers
             return View("Form", ViewModel);
 		}
 
-		[HttpPost]
-		[ValidateAntiForgeryToken]
+		[HttpPost]		
         public IActionResult Edit(CategoryFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -82,8 +79,7 @@ namespace Bokify.Web.Controllers
             return RedirectToAction(nameof(Index), viewmodel);
         }
 
-        [HttpPost]
-		[ValidateAntiForgeryToken]
+        [HttpPost]		
         public IActionResult ChangeStatus(int id)
         {
         

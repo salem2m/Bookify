@@ -78,6 +78,9 @@ options.AddPolicy("AdminsOnly", policy =>
 
 builder.Services.AddViewToHTML();
 
+//Add antiforgerytoken
+builder.Services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+
 //Add Serilog
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
@@ -95,6 +98,12 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+//secure cookies
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    Secure = CookieSecurePolicy.Always
+});
 
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 

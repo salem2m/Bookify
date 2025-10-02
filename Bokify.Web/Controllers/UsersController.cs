@@ -1,12 +1,8 @@
-﻿using Bokify.Web.Core.ViewModels;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text;
-using Bokify.Web.Services;
 
 namespace Bokify.Web.Controllers
 {
@@ -53,7 +49,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -122,7 +117,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(UserResetPasswordFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -177,7 +171,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UserFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -230,7 +223,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangeStatus(string id)
         {
             if (!ModelState.IsValid)
@@ -254,7 +246,6 @@ namespace Bokify.Web.Controllers
         }
 
 		[HttpPost]
-		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> Unlock(string id)
 		{
 			if (!ModelState.IsValid)

@@ -1,16 +1,10 @@
-﻿@using System.Drawing;
+﻿@inject IWebHostEnvironment webHostEnvironment;
 
-@inject IWebHostEnvironment webHostEnvironment;
-
-@* @{
-    using Image image = Image.FromFile($"{webHostEnvironment.WebRootPath}/assets/images/Logo.png");
-
-    using MemoryStream ms = new MemoryStream();
-
-    image.Save(ms, image.RawFormat);
-
-    var imageSrc = Convert.ToBase64String(ms.ToArray());
-} *@
+@{
+    var imagePath = System.IO.Path.Combine(webHostEnvironment.WebRootPath, "assets/images/Logo.png");
+    byte[] imageBytes = System.IO.File.ReadAllBytes(imagePath);
+    var imageSrc = Convert.ToBase64String(imageBytes);
+}
 
 <!DOCTYPE html>
 <html>
@@ -46,7 +40,7 @@
     </style>
 </head>
 <body>
-    @* <img src="data:image/png;base64,@imageSrc" id="Logo" /> *@
+    <img src="data:image/png;base64,@imageSrc" id="Logo" />
     @RenderBody()
 </body>
 </html>

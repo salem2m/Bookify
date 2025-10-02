@@ -1,12 +1,4 @@
-﻿using Bokify.Web.Core.Models;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using System.Security.Claims;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
     public class RentalsController : Controller
     {
@@ -50,7 +42,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(RentalFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -127,7 +118,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Edit(RentalFormViewModel model)
         {
             if(!ModelState.IsValid)
@@ -195,7 +185,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Return(RentalReturnFormViewModel model)
         {
             var rental = _context.Rentals
@@ -282,7 +271,6 @@ namespace Bokify.Web.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult MarkAsDeleted(int id)
         {
             var rental = _context.Rentals.Find(id);
@@ -302,7 +290,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult GetCopyDetails(SearchFormViewModel model)
         {
             if (!ModelState.IsValid)

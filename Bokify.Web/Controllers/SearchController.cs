@@ -1,7 +1,4 @@
-﻿using HashidsNet;
-using Microsoft.AspNetCore.Mvc;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
 
     public class SearchController : Controller

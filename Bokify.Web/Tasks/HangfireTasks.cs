@@ -2,7 +2,6 @@
 using WhatsAppCloudApi;
 using WhatsAppCloudApi.Services;
 
-
 namespace Bokify.Web.Tasks
 {
     public class HangfireTasks

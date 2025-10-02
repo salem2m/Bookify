@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace Bokify.Web.Controllers
+﻿namespace Bokify.Web.Controllers
 {
     public class BookCopiesController : Controller
     {
@@ -32,7 +30,6 @@ namespace Bokify.Web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(BookCopyFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -74,8 +71,7 @@ namespace Bokify.Web.Controllers
             return PartialView("Form", viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]       
         public IActionResult Edit(BookCopyFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -98,8 +94,7 @@ namespace Bokify.Web.Controllers
             return PartialView("_BookCopyRow", viewModel);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        [HttpPost]       
         public IActionResult ToggleStatus(int id)
         {
             var copy = _context.BookCopies.Find(id);
