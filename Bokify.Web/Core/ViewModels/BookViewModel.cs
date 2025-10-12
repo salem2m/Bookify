@@ -1,6 +1,4 @@
-﻿using UoN.ExpressiveAnnotations.NetCore.Attributes;
-
-namespace Bokify.Web.Core.ViewModels
+﻿namespace Bokify.Web.Core.ViewModels
 {
     public class BookViewModel
     {

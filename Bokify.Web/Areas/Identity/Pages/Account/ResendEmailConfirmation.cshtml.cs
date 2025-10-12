@@ -2,20 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Bokify.Web.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.AspNetCore.Hosting;
-using Bokify.Web.Services;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Bokify.Web.Areas.Identity.Pages.Account
 {
@@ -24,20 +16,20 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
-		private readonly IEmailBodyBuilder _emailBodyBuilder;
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
 
-		public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
-		{
-			_userManager = userManager;
-			_emailSender = emailSender;
-			_emailBodyBuilder = emailBodyBuilder;
-		}
+        public ResendEmailConfirmationModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
+        {
+            _userManager = userManager;
+            _emailSender = emailSender;
+            _emailBodyBuilder = emailBodyBuilder;
+        }
 
-		/// <summary>
-		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-		///     directly from your code. This API may change or be removed in future releases.
-		/// </summary>
-		[BindProperty]
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        [BindProperty]
         public InputModel Input { get; set; }
 
         /// <summary>
@@ -52,16 +44,16 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
             /// </summary>
             [Required]
             //[System.ComponentModel.DataAnnotations.EmailAddress]
-			public string Username { get; set; }
-		}
+            public string Username { get; set; }
+        }
 
         public void OnGet(string username)
         {
-			Input = new()
-			{
-				Username = username,
-			};
-		}
+            Input = new()
+            {
+                Username = username,
+            };
+        }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -70,11 +62,11 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                 return Page();
             }
 
-			var userName = Input.Username.ToUpper();
-			var user = await _userManager.Users
-				.SingleOrDefaultAsync(u => (u.NormalizedUserName == userName || u.NormalizedEmail == userName) && !u.IsDeleted);
+            var userName = Input.Username.ToUpper();
+            var user = await _userManager.Users
+                .SingleOrDefaultAsync(u => (u.NormalizedUserName == userName || u.NormalizedEmail == userName) && !u.IsDeleted);
 
-			if (user == null)
+            if (user == null)
             {
                 ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
                 return Page();
@@ -87,7 +79,7 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                 "/Account/ConfirmEmail",
                 pageHandler: null,
                 values: new { userId = userId, code = code },
-			protocol: Request.Scheme);
+            protocol: Request.Scheme);
 
             var placeholders = new Dictionary<string, string>()
                 {
@@ -99,10 +91,10 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                 };
 
             var body = _emailBodyBuilder.GetEmailBody(
-						EmailTemplates.Email, placeholders
-			);
+                        EmailTemplates.Email, placeholders
+            );
 
-			await _emailSender.SendEmailAsync(
+            await _emailSender.SendEmailAsync(
                 user.Email,
                 "Confirm your email", body);
 

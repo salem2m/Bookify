@@ -10,13 +10,13 @@
         public DateTime? ExtendedOn { get; set; }
         public int DelayInDays
         {
-            get 
+            get
             {
                 int delay = 0;
 
-                if (ReturnDate.HasValue && ReturnDate>EndDate)
-                    delay = (int)(ReturnDate.Value-EndDate).TotalDays;
-                else if(!ReturnDate.HasValue && DateTime.Today > EndDate)
+                if (ReturnDate.HasValue && ReturnDate > EndDate)
+                    delay = (int)(ReturnDate.Value - EndDate).TotalDays;
+                else if (!ReturnDate.HasValue && DateTime.Today > EndDate)
                     delay = (int)(DateTime.Today - EndDate).TotalDays;
 
                 return delay;

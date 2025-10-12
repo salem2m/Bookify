@@ -9,7 +9,7 @@
             RegularExpression(RegexPaterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
         public string FirstName { get; set; } = null!;
 
-        [Display(Name = "Last Name"), 
+        [Display(Name = "Last Name"),
             MaxLength(100, ErrorMessage = Errors.MaxLinth),
             RegularExpression(RegexPaterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
         public string LastName { get; set; } = null!;
@@ -39,9 +39,9 @@
         public string Email { get; set; } = null!;
 
         [RequiredIf("Key == ''", ErrorMessage = Errors.ReqImage)]
-        public IFormFile? Image { get; set; } =null!;
-        public string? ImageUrl { get; set; } 
-        public string? ImageThumbnailUrl { get; set; } 
+        public IFormFile? Image { get; set; } = null!;
+        public string? ImageUrl { get; set; }
+        public string? ImageThumbnailUrl { get; set; }
 
         [Display(Name = "Area")]
         public int AreaId { get; set; }

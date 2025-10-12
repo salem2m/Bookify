@@ -2,13 +2,16 @@
 
     $('[data-kt-filter="search"]').on('keyup', function () {
         var input = $(this);
-        datatable.search(input.value).draw();
+        datatable.search(this.value).draw();
     });
 
     datatable = $('#Books').DataTable({
         serverSide: true,
         processing: true,
         stateSave: true,
+        language: {
+            processing: '<div class="d-flex justify-content-center text-primary align-items-center dt-spinner"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><span class="text-muted ps-2">Loading...</span></div>'
+        },
         ajax: {
             url: '/Books/GetBooks',
             type: 'POST'

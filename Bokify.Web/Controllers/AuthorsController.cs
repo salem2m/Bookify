@@ -27,14 +27,14 @@
             return PartialView("_Form");
         }
 
-        [HttpPost] 
+        [HttpPost]
         public IActionResult Create(AuthorFormViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
             var author = _mapper.Map<Author>(model);
 
-            author.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            author.CreatedById = User.GetUserid();
             _context.Add(author);
             _context.SaveChanges();
 
@@ -56,7 +56,7 @@
             return PartialView("_Form", ViewModel);
         }
 
-        [HttpPost]      
+        [HttpPost]
         public IActionResult Edit(AuthorFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -68,14 +68,14 @@
 
             author = _mapper.Map(model, author);
             author.LastUpdatedOn = DateTime.Now;
-            author.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            author.LastUpdatedById = User.GetUserid();
             _context.SaveChanges();
             var viewmodel = _mapper.Map<AuthorViewModel>(author);
 
             return PartialView("_AuthorRow", viewmodel);
         }
 
-        [HttpPost]  
+        [HttpPost]
         public IActionResult ChangeStatus(int id)
         {
 
@@ -85,7 +85,7 @@
 
             author.IsDeleted = !author.IsDeleted;
             author.LastUpdatedOn = DateTime.Now;
-            author.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            author.LastUpdatedById = User.GetUserid();
             _context.SaveChanges();
 
             return Ok(author.LastUpdatedOn.ToString());

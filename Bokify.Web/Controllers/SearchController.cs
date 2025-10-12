@@ -42,8 +42,8 @@
         {
             var books = _context.Books
                 .Include(a => a.Author)
-                .Where(b=>!b.IsDeleted&&(b.Title.Contains(query) || b.Author!.Name.Contains(query)))
-                .Select(b=> new {b.Title, Author = b.Author!.Name, b = _hashids.EncodeHex(b.Id.ToString()) })
+                .Where(b => !b.IsDeleted && (b.Title.Contains(query) || b.Author!.Name.Contains(query)))
+                .Select(b => new { b.Title, Author = b.Author!.Name, b = _hashids.EncodeHex(b.Id.ToString()) })
                 .ToList();
 
             return Ok(books);

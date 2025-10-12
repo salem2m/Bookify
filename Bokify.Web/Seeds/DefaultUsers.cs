@@ -16,7 +16,7 @@ namespace Bokify.Web.Seeds
 
             var user = await userManager.FindByEmailAsync(admin.Email);
 
-            if(user is null)
+            if (user is null)
             {
                 await userManager.CreateAsync(admin, "P@ssword123");
                 await userManager.AddToRoleAsync(admin, AppRoles.Admin);

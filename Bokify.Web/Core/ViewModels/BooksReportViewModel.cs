@@ -1,10 +1,8 @@
-﻿using Bokify.Web.Core.Utilities;
-
-namespace Bokify.Web.Core.ViewModels
+﻿namespace Bokify.Web.Core.ViewModels
 {
     public class BooksReportViewModel
     {
-        [Display(Name ="Author")]
+        [Display(Name = "Author")]
         public List<int>? SelectedAuthors { get; set; } = new();
 
         public IEnumerable<SelectListItem> Authors { get; set; } = new List<SelectListItem>();

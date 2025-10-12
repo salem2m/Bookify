@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Text.Encodings.Web;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Bokify.Web.Controllers
 {
@@ -15,17 +15,17 @@ namespace Bokify.Web.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailBodyBuilder _emailBodyBuilder;
 
-		public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder)
-		{
-			_userManager = userManager;
-			_roleManager = roleManager;
-			_mapper = mapper;
-			_emailSender = emailSender;
-			_webHostEnvironment = webHostEnvironment;
-			_emailBodyBuilder = emailBodyBuilder;
-		}
+        public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder)
+        {
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _mapper = mapper;
+            _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
+            _emailBodyBuilder = emailBodyBuilder;
+        }
 
-		public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.ToListAsync();
             var usersViewModel = _mapper.Map<IEnumerable<UsersViewModel>>(users);
@@ -41,7 +41,8 @@ namespace Bokify.Web.Controllers
                 Roles = await _roleManager.Roles
                 .Select(r => new SelectListItem
                 {
-                    Text = r.Name, Value = r.Name 
+                    Text = r.Name,
+                    Value = r.Name
                 })
                 .ToListAsync()
             };
@@ -59,7 +60,7 @@ namespace Bokify.Web.Controllers
                 FullName = model.FullName,
                 UserName = model.UserName,
                 Email = model.Email,
-                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+                CreatedById = User.GetUserid()
             };
 
             var result = await _userManager.CreateAsync(user, model.Password!);
@@ -86,13 +87,13 @@ namespace Bokify.Web.Controllers
                 };
 
                 var body = _emailBodyBuilder.GetEmailBody(
-					  EmailTemplates.Email, placeholders
+                      EmailTemplates.Email, placeholders
                     );
 
                 await _emailSender.SendEmailAsync("salemgomaa01@gmail.com", "thisis me", body);
                 var users = await _userManager.Users.ToListAsync();
                 var usersViewModel = _mapper.Map<IEnumerable<UsersViewModel>>(users);
-                
+
 
                 await _emailSender.SendEmailAsync(user.Email, "Confirm your email", body);
 
@@ -100,7 +101,7 @@ namespace Bokify.Web.Controllers
                 return PartialView("_UserRow", viewModel);
             }
 
-            return BadRequest(string.Join(',', result.Errors.Select(e=>e.Description)));
+            return BadRequest(string.Join(',', result.Errors.Select(e => e.Description)));
         }
         [HttpGet]
         [Filters.AjaxOnly]
@@ -128,14 +129,14 @@ namespace Bokify.Web.Controllers
                 return NotFound();
 
             var currentPassword = user.PasswordHash;
-            
+
             await _userManager.RemovePasswordAsync(user);
-            
+
             var result = await _userManager.AddPasswordAsync(user, model.Password);
             if (result.Succeeded)
             {
                 user.LastUpdatedOn = DateTime.Now;
-                user.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                user.LastUpdatedById = User.GetUserid();
                 await _userManager.UpdateAsync(user);
 
                 var viewModel = _mapper.Map<UsersViewModel>(user);
@@ -184,7 +185,7 @@ namespace Bokify.Web.Controllers
             user = _mapper.Map(model, user);
 
             user.LastUpdatedOn = DateTime.Now;
-            user.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            user.LastUpdatedById = User.GetUserid();
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -198,9 +199,9 @@ namespace Bokify.Web.Controllers
                     await _userManager.AddToRolesAsync(user, model.SelectedRoles);
                 }
 
-				await _userManager.UpdateSecurityStampAsync(user);
+                await _userManager.UpdateSecurityStampAsync(user);
 
-				var viewModel = _mapper.Map<UsersViewModel>(user);
+                var viewModel = _mapper.Map<UsersViewModel>(user);
                 return PartialView("_UserRow", viewModel);
             }
             return BadRequest(string.Join(',', result.Errors.Select(e => e.Description)));
@@ -233,9 +234,9 @@ namespace Bokify.Web.Controllers
             if (user is null)
                 return BadRequest();
 
-            user.IsDeleted = !user.IsDeleted;  
+            user.IsDeleted = !user.IsDeleted;
             user.LastUpdatedOn = DateTime.Now;
-            user.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            user.LastUpdatedById = User.GetUserid();
 
             await _userManager.UpdateAsync(user);
 
@@ -245,24 +246,24 @@ namespace Bokify.Web.Controllers
             return Ok(user.LastUpdatedOn.ToString());
         }
 
-		[HttpPost]
-		public async Task<IActionResult> Unlock(string id)
-		{
-			if (!ModelState.IsValid)
-				return BadRequest();
+        [HttpPost]
+        public async Task<IActionResult> Unlock(string id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-			var user = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
 
-			if (user is null)
-				return BadRequest();
+            if (user is null)
+                return BadRequest();
 
-			var isLockedOut = await _userManager.IsLockedOutAsync(user);
+            var isLockedOut = await _userManager.IsLockedOutAsync(user);
             if (isLockedOut)
                 await _userManager.SetLockoutEndDateAsync(user, null);
 
-			await _userManager.UpdateAsync(user);
+            await _userManager.UpdateAsync(user);
 
-			return Ok();
-		}
-	}
+            return Ok();
+        }
+    }
 }

@@ -1,6 +1,4 @@
-﻿using Bokify.Web.Core.Models;
-
-namespace Bokify.Web.Data
+﻿namespace Bokify.Web.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -36,11 +34,11 @@ namespace Bokify.Web.Data
             foreach (var fk in cascadeFKs)
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
 
-            builder.Entity<BookCategory>().HasKey(e=> new {e.CategoryId, e.BookId});
+            builder.Entity<BookCategory>().HasKey(e => new { e.CategoryId, e.BookId });
 
-            builder.Entity<RentalCopy>().HasKey(e=> new { e.RentalId, e.BookCopyId});
+            builder.Entity<RentalCopy>().HasKey(e => new { e.RentalId, e.BookCopyId });
 
-            builder.Entity<Rental>().HasQueryFilter(e=> !e.IsDeleted );
+            builder.Entity<Rental>().HasQueryFilter(e => !e.IsDeleted);
             builder.Entity<RentalCopy>().HasQueryFilter(e => !e.Rental!.IsDeleted);
 
             base.OnModelCreating(builder);

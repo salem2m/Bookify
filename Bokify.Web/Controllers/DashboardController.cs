@@ -14,14 +14,14 @@
 
         public IActionResult Index()
         {
-            var books = _context.BookCopies.Where(b=>!b.IsDeleted).Count();
-            var numberOfSubscribers = _context.Subscribers.Where(b=>!b.IsDeleted).Count();
-            var numberOfBooks = books <= 10 ? books : books /10 * 10;
+            var books = _context.BookCopies.Where(b => !b.IsDeleted).Count();
+            var numberOfSubscribers = _context.Subscribers.Where(b => !b.IsDeleted).Count();
+            var numberOfBooks = books <= 10 ? books : books / 10 * 10;
 
             var lastAddedBooks = _context.Books
-                .Include(a=>a.Author)
-                .Where(b=>!b.IsDeleted)
-                .OrderByDescending(b=>b.Id)
+                .Include(a => a.Author)
+                .Where(b => !b.IsDeleted)
+                .OrderByDescending(b => b.Id)
                 .Take(8)
                 .ToList();
 
@@ -75,7 +75,7 @@
             var data = _context.RentalCopies
                 .Where(r => r.RentalDate >= startDate && r.RentalDate <= endDate)
                 .GroupBy(c => new { Date = c.RentalDate })
-                .Select(g => new ChartItemViewModel { Label=g.Key.Date.ToString("d MMM"), Value = g.Count().ToString()})
+                .Select(g => new ChartItemViewModel { Label = g.Key.Date.ToString("d MMM"), Value = g.Count().ToString() })
                 .ToList();
 
             return Ok(data);
@@ -85,10 +85,10 @@
         public IActionResult GetSubscribersPerGovernorate()
         {
             var data = _context.Subscribers
-                .Include(g=>g.Governorate)
-                .Where(s=>!s.IsDeleted)
-                .GroupBy(s => new { Governorate=s.Governorate!.Name})
-                .Select(i=> new ChartItemViewModel { Label = i.Key.Governorate, Value = i.Count().ToString()})
+                .Include(g => g.Governorate)
+                .Where(s => !s.IsDeleted)
+                .GroupBy(s => new { Governorate = s.Governorate!.Name })
+                .Select(i => new ChartItemViewModel { Label = i.Key.Governorate, Value = i.Count().ToString() })
                 .ToList();
 
             return Ok(data);

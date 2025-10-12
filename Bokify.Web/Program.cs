@@ -1,92 +1,30 @@
-using Bokify.Web.Core.Consts;
-using Bokify.Web.Core.Mapping;
 using Bokify.Web.Filters;
-using Bokify.Web.Helpers;
 using Bokify.Web.Seeds;
-using Bokify.Web.Settings;
 using Bokify.Web.Tasks;
 using Hangfire;
 using Hangfire.Dashboard;
-using HashidsNet;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Serilog;
-using System.Reflection;
-using System.Security.Claims;
-using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
-using ViewToHTML.Extensions;
-using WhatsAppCloudApi.Extensions;
 using WhatsAppCloudApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.Configure<SecurityStampValidatorOptions>(options =>
-    options.ValidationInterval = TimeSpan.Zero);
-
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultUI()
-    .AddDefaultTokenProviders();
-
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    //// Default Password settings.
-    //options.Password.RequireDigit = true;
-    //options.Password.RequireLowercase = true;
-    //options.Password.RequireNonAlphanumeric = true;
-    //options.Password.RequireUppercase = true;
-    options.Password.RequiredLength = 8;
-    //options.Password.RequiredUniqueChars = 1;
-    options.User.RequireUniqueEmail = true;
-});
-
-builder.Services.AddDataProtection().SetApplicationName(nameof(Bokify));
-
-builder.Services.AddSingleton<IHashids>(_ => new Hashids(minHashLength:11));
-
-builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
-
-builder.Services.AddTransient<IImageService, ImageService>();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
-builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
-
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));
-builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
-
-builder.Services.AddWhatsAppApiClient(builder.Configuration);
-
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
-builder.Services.AddHangfireServer();
-
-builder.Services.AddExpressiveAnnotations();
-
-builder.Services.Configure<AuthorizationOptions>(options =>
-options.AddPolicy("AdminsOnly", policy =>
-{
-    policy.RequireAuthenticatedUser();
-    policy.RequireRole(AppRoles.Admin);
-}));
-
-builder.Services.AddViewToHTML();
-
-//Add antiforgerytoken
-builder.Services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()));
+builder.Services.AddBookifyServices(builder);
 
 //Add Serilog
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
 builder.Host.UseSerilog();
 
 var app = builder.Build();
-app.UseExceptionHandler("/Home/Error");
+
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Append("X-Frame-Options", "Deny");
+    await next();
+});
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -94,18 +32,18 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    
+    app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 //secure cookies
-app.UseCookiePolicy(new CookiePolicyOptions
-{
-    Secure = CookieSecurePolicy.Always
-});
+//app.UseCookiePolicy(new CookiePolicyOptions
+//{
+//    Secure = CookieSecurePolicy.Always
+//});
 
-app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -129,7 +67,7 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 {
     DashboardTitle = "Bookify Dashboard",
     //IsReadOnlyFunc = (DashboardContext context) => true,
-     Authorization = new IDashboardAuthorizationFilter[]
+    Authorization = new IDashboardAuthorizationFilter[]
      {
         new HangfireAuthorizationFilter("AdminsOnly")
      }

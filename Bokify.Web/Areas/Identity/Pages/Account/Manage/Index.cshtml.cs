@@ -2,13 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Bokify.Web.Core.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
@@ -19,21 +13,21 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IImageService _imageService;
 
-		public IndexModel(
-			UserManager<ApplicationUser> userManager,
-			SignInManager<ApplicationUser> signInManager,
-			IImageService imageService)
-		{
-			_userManager = userManager;
-			_signInManager = signInManager;
-			_imageService = imageService;
-		}
+        public IndexModel(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IImageService imageService)
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _imageService = imageService;
+        }
 
-		/// <summary>
-		///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-		///     directly from your code. This API may change or be removed in future releases.
-		/// </summary>
-		public string Username { get; set; }
+        /// <summary>
+        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+        ///     directly from your code. This API may change or be removed in future releases.
+        /// </summary>
+        public string Username { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -55,15 +49,15 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-			/// <summary>
-			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-			///     directly from your code. This API may change or be removed in future releases.
-			/// </summary>
-			[Required, MaxLength(100, ErrorMessage = Errors.MaxLinth),
-			RegularExpression(RegexPaterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
-			public string FullName { get; set; } = null!;
+            /// <summary>
+            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+            ///     directly from your code. This API may change or be removed in future releases.
+            /// </summary>
+            [Required, MaxLength(100, ErrorMessage = Errors.MaxLinth),
+            RegularExpression(RegexPaterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
+            public string FullName { get; set; } = null!;
 
-			[Phone]
+            [Phone]
             [Display(Name = "Phone number"), MaxLength(11, ErrorMessage = Errors.MaxLinth),
                 RegularExpression(RegexPaterns.MobileNumber, ErrorMessage = Errors.InvalidPhoneNumber)]
             public string PhoneNumber { get; set; }
@@ -111,11 +105,11 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            if(Input.Avatar is not null)
+            if (Input.Avatar is not null)
             {
-                 _imageService.Delete($"/images/users/{user.Id}.png");
+                _imageService.Delete($"/images/users/{user.Id}.png");
 
-                var(isUploaded, erroreMessage) = await _imageService.UploadAsync(Input.Avatar, $"{user.Id}.png", "/images/users", hasThumbnail:false);
+                var (isUploaded, erroreMessage) = await _imageService.UploadAsync(Input.Avatar, $"{user.Id}.png", "/images/users", hasThumbnail: false);
                 if (!isUploaded)
                 {
                     ModelState.AddModelError("Input.Avatar", erroreMessage);
@@ -123,8 +117,8 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
                     return Page();
                 }
                 else if (Input.ImageRemoved)
-					_imageService.Delete($"/images/users/{user.Id}.png");
-			}
+                    _imageService.Delete($"/images/users/{user.Id}.png");
+            }
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)
@@ -136,16 +130,16 @@ namespace Bokify.Web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
-            if(Input.FullName != user.FullName)
+            if (Input.FullName != user.FullName)
             {
                 user.FullName = Input.FullName;
-				var setFullName = await _userManager.UpdateAsync(user);
-				if (!setFullName.Succeeded)
-				{
-					StatusMessage = "Unexpected error when trying to set Full Name.";
-					return RedirectToPage();
-				}
-			}
+                var setFullName = await _userManager.UpdateAsync(user);
+                if (!setFullName.Succeeded)
+                {
+                    StatusMessage = "Unexpected error when trying to set Full Name.";
+                    return RedirectToPage();
+                }
+            }
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

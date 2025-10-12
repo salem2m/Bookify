@@ -1,8 +1,8 @@
 ﻿namespace Bokify.Web.Core.Models
 {
-	[Index(nameof(Name), IsUnique = true)]
-	public class Category :Base
-	{
+    [Index(nameof(Name), IsUnique = true)]
+    public class Category : Base
+    {
         public int Id { get; set; }
         [MaxLength(100)]
         public string Name { get; set; } = null!;

@@ -19,10 +19,10 @@
             var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
 
             var subscriber = _context.Subscribers
-                .Include(s=>s.Subscriptions)
-                .Include(r=>r.Rentals)
-                .ThenInclude(r=>r.RentalCopies)
-                .SingleOrDefault(s=>s.Id == subscriberId);
+                .Include(s => s.Subscriptions)
+                .Include(r => r.Rentals)
+                .ThenInclude(r => r.RentalCopies)
+                .SingleOrDefault(s => s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -45,15 +45,15 @@
         public IActionResult Create(RentalFormViewModel model)
         {
             if (!ModelState.IsValid)
-               return View(model);
+                return View(model);
 
-               var subscriberId = int.Parse(_dataProtector.Unprotect(model.SubscriberKey));
+            var subscriberId = int.Parse(_dataProtector.Unprotect(model.SubscriberKey));
 
-               var subscriber = _context.Subscribers
-                   .Include(s => s.Subscriptions)
-                   .Include(s => s.Rentals)
-                   .ThenInclude(r => r.RentalCopies)
-                   .SingleOrDefault(s => s.Id == subscriberId);
+            var subscriber = _context.Subscribers
+                .Include(s => s.Subscriptions)
+                .Include(s => s.Rentals)
+                .ThenInclude(r => r.RentalCopies)
+                .SingleOrDefault(s => s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -71,13 +71,13 @@
             Rental rental = new()
             {
                 RentalCopies = copies,
-                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+                CreatedById = User.GetUserid()
             };
 
             subscriber.Rentals.Add(rental);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(RentalDetails), new {id = rental.Id});
+            return RedirectToAction(nameof(RentalDetails), new { id = rental.Id });
 
         }
 
@@ -103,9 +103,9 @@
             if (!string.IsNullOrEmpty(errorMessage))
                 return View("NotAllowedRental", errorMessage);
 
-            var currentCopiesIds = rental.RentalCopies.Select(c=>c.BookCopyId).ToList();
+            var currentCopiesIds = rental.RentalCopies.Select(c => c.BookCopyId).ToList();
 
-            var currentCopies = _context.BookCopies.Where(c => currentCopiesIds.Contains(c.Id)).Include(b=>b.Book).ToList();
+            var currentCopies = _context.BookCopies.Where(c => currentCopiesIds.Contains(c.Id)).Include(b => b.Book).ToList();
 
             var viewModel = new RentalFormViewModel
             {
@@ -120,7 +120,7 @@
         [HttpPost]
         public IActionResult Edit(RentalFormViewModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return View(model);
 
             var rental = _context.Rentals
@@ -150,7 +150,7 @@
                 return View("NotAllowedRental", rentalsError);
 
             rental.RentalCopies = copies;
-            rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            rental.LastUpdatedById = User.GetUserid();
             rental.LastUpdatedOn = DateTime.Now;
             _context.SaveChanges();
 
@@ -162,7 +162,7 @@
             var rental = _context.Rentals
                 .Include(r => r.RentalCopies)
                 .ThenInclude(b => b.BookCopy)
-                .ThenInclude(b=>b!.Book)
+                .ThenInclude(b => b!.Book)
                 .SingleOrDefault(r => r.Id == id);
 
             if (rental is null || rental.CreatedOn.Date == DateTime.Today)
@@ -174,7 +174,7 @@
             var viewModel = new RentalReturnFormViewModel
             {
                 Id = id,
-                Copies = _mapper.Map<IList<RentalCopyViewModel>>(rental.RentalCopies.Where(c=>!c.ReturnDate.HasValue).ToList()),
+                Copies = _mapper.Map<IList<RentalCopyViewModel>>(rental.RentalCopies.Where(c => !c.ReturnDate.HasValue).ToList()),
                 SelectedCopies = rental.RentalCopies.Where(c => !c.ReturnDate.HasValue).Select(c => new ReturnCopyViewModel { Id = c.BookCopyId, IsReturned = c.ExtendedeOn.HasValue ? false : null }).ToList(),
                 AllowExtend = !subscriber!.IsBlackListed
                     && subscriber!.Subscriptions.Last().EndDate >= rental.StartDate.AddDays((int)RentalsConfigurations.RentalDuration * 2)
@@ -215,7 +215,7 @@
                 if (subscriber!.IsBlackListed)
                     error = Errors.RentalNotAllowedForBlacklisted;
 
-                else if (subscriber!.Subscriptions.Last().EndDate < rental.StartDate.AddDays((int)RentalsConfigurations.RentalDuration*2))
+                else if (subscriber!.Subscriptions.Last().EndDate < rental.StartDate.AddDays((int)RentalsConfigurations.RentalDuration * 2))
                     error = Errors.RentalNotAllowedForInactive;
 
                 else if (rental.StartDate.AddDays((int)RentalsConfigurations.RentalDuration) < DateTime.Today)
@@ -252,7 +252,7 @@
                     if (currentCopy.ExtendedeOn.HasValue) continue;
 
                     currentCopy.ExtendedeOn = DateTime.Now;
-                    currentCopy.EndDate = currentCopy.RentalDate.AddDays((int)RentalsConfigurations.RentalDuration*2);
+                    currentCopy.EndDate = currentCopy.RentalDate.AddDays((int)RentalsConfigurations.RentalDuration * 2);
                     isUpdated = true;
                 }
             }
@@ -260,13 +260,13 @@
             if (isUpdated)
             {
                 rental.LastUpdatedOn = DateTime.Now;
-                rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                rental.LastUpdatedById = User.GetUserid();
                 rental.PenaltyPaid = model.PenaltyPaid;
 
                 _context.SaveChanges();
             }
 
-            return RedirectToAction(nameof(GetCopyDetails), new { id = rental.Id });
+            return RedirectToAction(nameof(RentalDetails), new { id = rental.Id });
         }
 
 
@@ -280,8 +280,8 @@
 
             rental.IsDeleted = true;
             rental.LastUpdatedOn = DateTime.Now;
-            rental.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
-            
+            rental.LastUpdatedById = User.GetUserid();
+
             _context.SaveChanges();
 
             var totalCopiesCount = _context.RentalCopies.Count(r => r.RentalId == id);
@@ -296,7 +296,7 @@
                 return BadRequest();
 
             var copy = _context.BookCopies.Include(b => b.Book)
-                                       .SingleOrDefault(c => c.SerialNumber.ToString() == model.Value 
+                                       .SingleOrDefault(c => c.SerialNumber.ToString() == model.Value
                                        && !c.IsDeleted && !c.Book!.IsDeleted);
             if (copy is null)
                 return NotFound(Errors.InvalidSerialNumber);
@@ -318,7 +318,7 @@
             var copies = _context.Rentals
                 .Include(r => r.RentalCopies)
                 .ThenInclude(b => b.BookCopy)
-                .ThenInclude(b=>b!.Book)
+                .ThenInclude(b => b!.Book)
                 .SingleOrDefault(r => r.Id == id);
 
             if (copies is null || copies.IsDeleted)

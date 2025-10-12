@@ -54,12 +54,12 @@ namespace Bokify.Web.Controllers
             var subscriberId = int.Parse(_dataProtector.Unprotect(id));
 
             var subscriber = _context.Subscribers
-                .Include(g=>g.Governorate)
-                .Include(a=>a.Area)
-                .Include(a=>a.Subscriptions)
-                .Include(r=>r.Rentals)
-                .ThenInclude(c=>c.RentalCopies)
-                .SingleOrDefault(s=>s.Id == subscriberId);
+                .Include(g => g.Governorate)
+                .Include(a => a.Area)
+                .Include(a => a.Subscriptions)
+                .Include(r => r.Rentals)
+                .ThenInclude(c => c.RentalCopies)
+                .SingleOrDefault(s => s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -96,7 +96,7 @@ namespace Bokify.Web.Controllers
 
             subscriber.ImageUrl = $"{imagePath}/{imageName}";
             subscriber.ImageThumbnailUrl = $"{imagePath}/thumb/{imageName}";
-            subscriber.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            subscriber.CreatedById = User.GetUserid();
 
             Subscription subscription = new()
             {
@@ -141,7 +141,7 @@ namespace Bokify.Web.Controllers
 
                 var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01286582478" : model.MobileNumber;
 
-                BackgroundJob.Enqueue(() =>_whatsAppClient
+                BackgroundJob.Enqueue(() => _whatsAppClient
                     .SendMessage($"2{mobileNumber}", WhatsAppLanguageCode.English, WhatsAppTemplates.WelcomMessage, components));
             }
 
@@ -155,7 +155,7 @@ namespace Bokify.Web.Controllers
             var subscriberId = int.Parse(_dataProtector.Unprotect(id));
 
             var subscriber = _context.Subscribers.Find(subscriberId);
-            if(subscriber is null)
+            if (subscriber is null)
                 return NotFound();
 
             var viewModel = _mapper.Map<SubscriberFormViewModel>(subscriber);
@@ -203,7 +203,7 @@ namespace Bokify.Web.Controllers
             }
 
             subscriber = _mapper.Map(model, subscriber);
-            subscriber.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            subscriber.LastUpdatedById = User.GetUserid();
             subscriber.LastUpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
@@ -233,7 +233,7 @@ namespace Bokify.Web.Controllers
 
             Subscription newSubscription = new()
             {
-                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
+                CreatedById = User.GetUserid(),
                 CreatedOn = DateTime.Now,
                 StartDate = startDate,
                 EndDate = startDate.AddYears(1)
@@ -288,10 +288,10 @@ namespace Bokify.Web.Controllers
         public IActionResult AllowEmail(SubscriberFormViewModel model)
         {
             var subscriberId = 0;
-            if(!string.IsNullOrEmpty(model.Key))
+            if (!string.IsNullOrEmpty(model.Key))
                 subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
 
-            var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.Email == model.Email);
+            var subscriber = _context.Subscribers.SingleOrDefault(e => e.Email == model.Email);
             var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);
@@ -302,7 +302,7 @@ namespace Bokify.Web.Controllers
             if (!string.IsNullOrEmpty(model.Key))
                 subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
 
-            var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.NationalId == model.NationalId);
+            var subscriber = _context.Subscribers.SingleOrDefault(e => e.NationalId == model.NationalId);
             var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);
@@ -313,7 +313,7 @@ namespace Bokify.Web.Controllers
             if (!string.IsNullOrEmpty(model.Key))
                 subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
 
-            var subscriber =  _context.Subscribers.SingleOrDefault(e=> e.MobileNumber == model.MobileNumber);
+            var subscriber = _context.Subscribers.SingleOrDefault(e => e.MobileNumber == model.MobileNumber);
             var isAllowed = subscriber is null || subscriber.Id.Equals(subscriberId);
 
             return Json(isAllowed);

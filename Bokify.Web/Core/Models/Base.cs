@@ -1,6 +1,4 @@
-﻿using Bokify.Web.Core.Models;
-
-namespace Bokify.Web.Core.Models
+﻿namespace Bokify.Web.Core.Models
 {
     public class Base
     {

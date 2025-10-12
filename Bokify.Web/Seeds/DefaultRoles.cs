@@ -13,6 +13,6 @@ namespace Bokify.Web.Seeds
                 await roleManager.CreateAsync(new IdentityRole(AppRoles.Archive));
                 await roleManager.CreateAsync(new IdentityRole(AppRoles.Reception));
             }
-        } 
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Bokify.Web.Extensions;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using OpenHtmlToPdf;
 using ViewToHTML.Services;
 
@@ -67,7 +66,7 @@ namespace Bokify.Web.Controllers
             var headerCells = new string[] { "Title", "Author", "Categories", "Publisher",
                 "Publishing Date", "Hall", "Available for rental", "Status" };
 
-            
+
             sheet.AddHeader(headerCells);
 
             for (int i = 0; i < books.Count(); i++)
@@ -115,9 +114,9 @@ namespace Bokify.Web.Controllers
         #endregion
 
         #region Rentals
-        public IActionResult Rentals(string date, int pageNumber) 
+        public IActionResult Rentals(string date, int pageNumber)
         {
-            var viewModel = new RentalsReportViewModel{Date=date};
+            var viewModel = new RentalsReportViewModel { Date = date };
 
             if (!string.IsNullOrEmpty(date))
             {
@@ -132,19 +131,19 @@ namespace Bokify.Web.Controllers
                     ModelState.AddModelError("Date", Errors.InvalidEndDate);
                     return View(viewModel);
                 }
-                
+
                 var rentals = _context.RentalCopies
-                .Include(s=>s.BookCopy).ThenInclude(s=>s!.Book).ThenInclude(a => a!.Author).Include(r=>r.Rental).ThenInclude(b=>b!.Subscriber)
-                .Where(r=>r.RentalDate.Date>=start && r.RentalDate.Date <= end);
-                
+                .Include(s => s.BookCopy).ThenInclude(s => s!.Book).ThenInclude(a => a!.Author).Include(r => r.Rental).ThenInclude(b => b!.Subscriber)
+                .Where(r => r.RentalDate.Date >= start && r.RentalDate.Date <= end);
+
                 if (pageNumber != 0)
-                viewModel.Rentals = PaginatedList<RentalCopy>.Create(rentals, pageNumber, (int)ReportsConfigurations.PageSize);
+                    viewModel.Rentals = PaginatedList<RentalCopy>.Create(rentals, pageNumber, (int)ReportsConfigurations.PageSize);
             }
 
-            
+
             ModelState.Clear();
 
-            return View(viewModel); 
+            return View(viewModel);
         }
 
         public async Task<IActionResult> ExportRentalsToExcel(string date)

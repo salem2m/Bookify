@@ -1,6 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Books";
 }
+@section Styles {
+    <link href="~/plugins/datatables/datatables.bundle.css" rel="stylesheet" />
+}
 <div class="alert bg-light-primary border border-primary border-1 border-dashed d-flex justify-content-between w-100 p-2 mb-5 m">
     <div class="d-flex align-items-center">
         <div class="symbol symbol-35px me-2">
@@ -62,8 +65,10 @@
     </div>
 </div>
 
-@section Styles {
-    <link href="~/plugins/datatables/datatables.bundle.css" rel="stylesheet" />
+
+
+@section plugins {
+    <script src="~/plugins/datatables/datatables.bundle.js"></script>
 }
 
 @Html.AntiForgeryToken()

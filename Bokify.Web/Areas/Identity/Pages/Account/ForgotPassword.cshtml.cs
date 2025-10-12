@@ -2,18 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Bokify.Web.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.Text.Encodings.Web;
 
 namespace Bokify.Web.Areas.Identity.Pages.Account
 {
@@ -21,8 +15,8 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
-		private readonly IEmailBodyBuilder _emailBodyBuilder;
-		public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
+        public ForgotPasswordModel(UserManager<ApplicationUser> userManager, IEmailSender emailSender, IEmailBodyBuilder emailBodyBuilder)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -81,10 +75,10 @@ namespace Bokify.Web.Areas.Identity.Pages.Account
                     {"linkTitle", "Reset Password"}
                 };
 
-				var body = _emailBodyBuilder.GetEmailBody(
-						EmailTemplates.Email, placeholders);
+                var body = _emailBodyBuilder.GetEmailBody(
+                        EmailTemplates.Email, placeholders);
 
-				await _emailSender.SendEmailAsync(
+                await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     body);

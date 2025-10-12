@@ -44,9 +44,9 @@
             {
                 EditionNumber = model.EditionNumber,
                 IsAvailableForRental = book.IsAvailableForRental && model.IsAvailableForRental,
-                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
+                CreatedById = User.GetUserid()
             };
-            
+
 
             book.Copies.Add(copy);
             _context.SaveChanges();
@@ -71,7 +71,7 @@
             return PartialView("Form", viewModel);
         }
 
-        [HttpPost]       
+        [HttpPost]
         public IActionResult Edit(BookCopyFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -85,7 +85,7 @@
             copy.EditionNumber = model.EditionNumber;
             copy.IsAvailableForRental = copy.Book!.IsAvailableForRental && model.IsAvailableForRental;
             copy.LastUpdatedOn = DateTime.Now;
-            copy.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            copy.LastUpdatedById = User.GetUserid();
 
             _context.SaveChanges();
 
@@ -94,7 +94,7 @@
             return PartialView("_BookCopyRow", viewModel);
         }
 
-        [HttpPost]       
+        [HttpPost]
         public IActionResult ToggleStatus(int id)
         {
             var copy = _context.BookCopies.Find(id);
@@ -104,7 +104,7 @@
 
             copy.IsDeleted = !copy.IsDeleted;
             copy.LastUpdatedOn = DateTime.Now;
-            copy.LastUpdatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            copy.LastUpdatedById = User.GetUserid();
 
             _context.SaveChanges();
 

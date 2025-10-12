@@ -19,7 +19,8 @@ namespace Bokify.Web.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            MailMessage message = new() {
+            MailMessage message = new()
+            {
                 From = new MailAddress(_mailSettings.Email!, _mailSettings.DisplayName),
                 Body = htmlMessage,
                 Subject = subject,
@@ -27,7 +28,8 @@ namespace Bokify.Web.Services
             };
             message.To.Add(_webHostEnvironment.IsDevelopment() ? "salemgomaa01@gmail.com" : email);
 
-            SmtpClient smtpClient = new(_mailSettings.Host) { 
+            SmtpClient smtpClient = new(_mailSettings.Host)
+            {
                 Port = _mailSettings.port,
                 Credentials = new NetworkCredential(_mailSettings.Email, _mailSettings.Password),
                 EnableSsl = true

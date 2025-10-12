@@ -1,14 +1,15 @@
 ﻿namespace Bokify.Web.Core.Mapping
 {
-    public class MappingProfile : Profile 
+    public class MappingProfile : Profile
     {
-        public MappingProfile() {
+        public MappingProfile()
+        {
             //category mapper
             CreateMap<Category, CategoryViewModel>();
             CreateMap<CategoryFormViewModel, Category>().ReverseMap();
             CreateMap<Category, SelectListItem>()
-                .ForMember(dest=>dest.Value,opt=>opt.MapFrom(src=>src.Id))
-                .ForMember(dest=>dest.Text,opt=>opt.MapFrom(dest=>dest.Name));
+                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Text, opt => opt.MapFrom(dest => dest.Name));
 
             //author mapper
             CreateMap<Author, AuthorViewModel>();
@@ -23,7 +24,7 @@
                 .ForMember(dest => dest.Categories, opt => opt.Ignore());
             CreateMap<Book, BookViewModel>()
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author!.Name))
-                .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories.Select(c=>c.Category!.Name).ToList()));
+                .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories.Select(c => c.Category!.Name).ToList()));
             CreateMap<BookCopy, BookCopyViewModel>()
                 .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book!.Title))
                 .ForMember(dest => dest.ImageThumbnailUrl, opt => opt.MapFrom(src => src.Book!.ImageThumbnailUrl))
@@ -53,7 +54,7 @@
 
             CreateMap<Subscriber, SubscriberSearchFormViewModel>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"));
-            
+
             CreateMap<Subscriber, SubscriberViewModel>()
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
                 .ForMember(dest => dest.Area, opt => opt.MapFrom(src => src.Area!.Name))

@@ -9,11 +9,11 @@
         public bool PenaltyPaid { get; set; }
         public bool IsDeleted { get; set; }
         public IEnumerable<RentalCopyViewModel> RentalCopies { get; set; } = new List<RentalCopyViewModel>();
-        public int TotalDelayInDays 
+        public int TotalDelayInDays
         {
             get
             {
-               return RentalCopies.Sum(c=>c.DelayInDays);
+                return RentalCopies.Sum(c => c.DelayInDays);
             }
         }
         public int NumberOfCopies

@@ -9,7 +9,7 @@ namespace Bokify.Web.Extensions
             for (int i = 0; i < headerCells.Length; i++)
             {
                 sheet.Cell(1, i + 1).SetValue(headerCells[i]);
-            } 
+            }
         }
 
         public static void Format(this IXLWorksheet sheet)
@@ -23,7 +23,7 @@ namespace Bokify.Web.Extensions
 
         public static void AddTable(this IXLWorksheet sheet, int numberOfRows, int numberOfColumns)
         {
-            var range = sheet.Range(1, 1, numberOfRows , numberOfColumns);
+            var range = sheet.Range(1, 1, numberOfRows, numberOfColumns);
             var table = range.CreateTable();
 
             table.Theme = XLTableTheme.TableStyleMedium16;
