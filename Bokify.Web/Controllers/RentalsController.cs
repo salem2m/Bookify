@@ -2,11 +2,11 @@
 {
     public class RentalsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IDataProtector _dataProtector;
 
-        public RentalsController(ApplicationDbContext context, IMapper mapper, IDataProtectionProvider dataProtector)
+        public RentalsController(IApplicationDbContext context, IMapper mapper, IDataProtectionProvider dataProtector)
         {
             _context = context;
             _mapper = mapper;

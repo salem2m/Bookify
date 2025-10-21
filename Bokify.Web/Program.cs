@@ -1,6 +1,8 @@
+using Bokify.Web;
 using Bokify.Web.Filters;
 using Bokify.Web.Seeds;
 using Bokify.Web.Tasks;
+using Bookify.Infrastructure;
 using Hangfire;
 using Hangfire.Dashboard;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +13,9 @@ using WhatsAppCloudApi.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddBookifyServices(builder);
+builder.Services.AddWebServices(builder);
+
+builder.Services.AddInfrastructureServices(builder.Configuration);
 
 //Add Serilog
 Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();

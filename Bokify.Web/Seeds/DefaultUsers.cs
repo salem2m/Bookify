@@ -1,5 +1,4 @@
-﻿using Bokify.Web.Core.Consts;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace Bokify.Web.Seeds
 {

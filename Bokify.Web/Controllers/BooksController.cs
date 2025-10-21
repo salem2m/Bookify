@@ -1,12 +1,9 @@
-﻿using Bokify.Web.Settings;
-using CloudinaryDotNet;
-using Microsoft.Extensions.Options;
-
+﻿using CloudinaryDotNet;
 namespace Bokify.Web.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IImageService _imageService;
@@ -15,7 +12,7 @@ namespace Bokify.Web.Controllers
         private List<string> _allowedExtentions = new() { ".jpg", ".png", ".jpeg" };
         private int _maxAllowedSize = 2097152;
 
-        public BooksController(ApplicationDbContext context,
+        public BooksController(IApplicationDbContext context,
             IMapper mapper,
             IWebHostEnvironment webHostEnvironment,
             IOptions<CloudinarySettings> cloudinary,
@@ -141,7 +138,7 @@ namespace Bokify.Web.Controllers
 
             book.CreatedById = User.GetUserid();
 
-            _context.Add(book);
+            _context.Books.Add(book);
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Details), new { id = book.Id });

@@ -6,14 +6,14 @@ namespace Bokify.Web.Tasks
 {
     public class HangfireTasks
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IWhatsAppClient _whatsAppClient;
 
         private readonly IEmailBodyBuilder _emailBodyBuilder;
         private readonly IEmailSender _emailSender;
 
-        public HangfireTasks(ApplicationDbContext context,
+        public HangfireTasks(IApplicationDbContext context,
             IWebHostEnvironment webHostEnvironment,
             IWhatsAppClient whatsAppClient,
             IEmailBodyBuilder emailBodyBuilder,

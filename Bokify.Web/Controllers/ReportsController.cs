@@ -6,10 +6,10 @@ namespace Bokify.Web.Controllers
 {
     public class ReportsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IViewRendererService _viewRendererService;
-        public ReportsController(ApplicationDbContext context, IMapper mapper, IViewRendererService viewRendererService)
+        public ReportsController(IApplicationDbContext context, IMapper mapper, IViewRendererService viewRendererService)
         {
             _context = context;
             _mapper = mapper;

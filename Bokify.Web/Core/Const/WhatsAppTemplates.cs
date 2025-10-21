@@ -1,9 +1,0 @@
-﻿namespace Bokify.Web.Core.Const
-{
-    public static class WhatsAppTemplates
-    {
-        public const string WelcomMessage = "welcom_message";
-        public const string SubscriptionRenew = "subscription_renew";
-        public const string SubscriptionExpiration = "subscription_expiration";
-    }
-}

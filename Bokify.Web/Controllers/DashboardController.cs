@@ -3,10 +3,10 @@
     [Authorize]
     public class DashboardController : Controller
     {
-        readonly ApplicationDbContext _context;
+        readonly IApplicationDbContext _context;
         readonly IMapper _mapper;
 
-        public DashboardController(ApplicationDbContext context, IMapper mapper)
+        public DashboardController(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

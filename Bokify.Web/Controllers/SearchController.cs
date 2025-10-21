@@ -3,11 +3,11 @@
 
     public class SearchController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IHashids _hashids;
 
-        public SearchController(IHashids hashids, IMapper mapper, ApplicationDbContext context)
+        public SearchController(IHashids hashids, IMapper mapper, IApplicationDbContext context)
         {
             _hashids = hashids;
             _mapper = mapper;

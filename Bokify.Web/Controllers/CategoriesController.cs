@@ -3,10 +3,10 @@
 
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public CategoriesController(ApplicationDbContext context, IMapper mapper = null)
+        public CategoriesController(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -36,7 +36,7 @@
 
             category.CreatedById = User.GetUserid();
 
-            _context.Add(category);
+            _context.Categories.Add(category);
             _context.SaveChanges();
 
             var viewmodel = _mapper.Map<CategoryViewModel>(category);

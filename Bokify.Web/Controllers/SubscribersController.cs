@@ -7,7 +7,7 @@ namespace Bokify.Web.Controllers
 {
     public class SubscribersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IDataProtector _dataProtector;
@@ -16,7 +16,7 @@ namespace Bokify.Web.Controllers
         private readonly IEmailBodyBuilder _emailBodyBuilder;
         private readonly IEmailSender _emailSender;
 
-        public SubscribersController(ApplicationDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment, IImageService imageService, IDataProtectionProvider dataProtector, IWhatsAppClient whatsAppClient, IEmailBodyBuilder emailBodyBuilder, IEmailSender emailSender)
+        public SubscribersController(IApplicationDbContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment, IImageService imageService, IDataProtectionProvider dataProtector, IWhatsAppClient whatsAppClient, IEmailBodyBuilder emailBodyBuilder, IEmailSender emailSender)
         {
             _context = context;
             _mapper = mapper;
@@ -108,7 +108,7 @@ namespace Bokify.Web.Controllers
 
             subscriber.Subscriptions.Add(subscription);
 
-            _context.Add(subscriber);
+            _context.Subscribers.Add(subscriber);
             _context.SaveChanges();
 
             //Send welcome email
