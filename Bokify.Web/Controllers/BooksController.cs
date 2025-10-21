@@ -222,8 +222,8 @@ namespace Bokify.Web.Controllers
             //book.ImageThumbnailUrl = GetThumbnailUrl(book.ImageUrl!);
             //book.ImagePublicId = imgPubId;
             if (!model.IsAvailableForRental)
-                foreach (var copy in book.Copies)
-                    copy.IsAvailableForRental = false;
+                _context.BookCopies.Where(b=>b.BookId == book.Id)
+                    .ExecuteUpdate(c=>c.SetProperty(c=>c.IsAvailableForRental, false));
 
             foreach (var category in model.SelectedCategories)
                 book.Categories.Add(new BookCategory { CategoryId = category });
