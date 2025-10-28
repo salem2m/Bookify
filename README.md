@@ -133,8 +133,7 @@ Bookify/
 
 ## 🌟 Future Improvements
 - RESTful API for mobile integration  
-- Real-time dashboards & analytics  
-- Dark mode support  
+- AI(Recommendation Books, Support) 
 - Enhanced UI/UX with modern components  
 
 ---
