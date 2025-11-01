@@ -67,7 +67,6 @@ It aims to simplify the management of books, subscribers, rentals, and users in 
 - *Hangfire* (background jobs & scheduling)  
 - *Serilog* (structured logging)  
 - *AutoMapper* (object mapping)  
-- *FluentValidation* (input validation)  
 - *Clean Architecture*  
 
 ### 🎨 Frontend
